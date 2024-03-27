@@ -1,3 +1,3 @@
 # cs304-project-sp24-draft
 
-Team members: will go here!
+Team members: Chelsea Ji
