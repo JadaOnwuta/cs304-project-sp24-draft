@@ -1,3 +1,3 @@
 # cs304-project-sp24-draft
 
-Team members: Chelsea Ji, Jada Onwuta
+Team members: Chelsea Ji, Jada Onwuta, Lyra Kalajian
