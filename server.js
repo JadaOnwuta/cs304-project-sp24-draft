@@ -105,12 +105,12 @@ app.post('/logout/', (req, res) => {
 
 app.get('/form/', (req, res) => {
     console.log('get form');
-    return res.render('form.ejs', {action: '/form/', data: req.query });
+    return res.render('signup.ejs', {action: '/form/', data: req.query });
 });
 
 app.post('/form/', (req, res) => {
     console.log('post form');
-    return res.render('form.ejs', {action: '/form/', data: req.body });
+    return res.render('signup.ejs', {action: '/form/', data: req.body });
 });
 
 app.get('/staffList/', async (req, res) => {
