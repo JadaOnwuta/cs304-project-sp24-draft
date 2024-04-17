@@ -56,8 +56,9 @@ app.use(cookieSession({
 // custom routes here
 
 const DB = process.env.USER;
-const WMDB = 'wmdb';
+const WW = "wworld";
 const STAFF = 'staff';
+const PROFILES = 'profiles';
 
 // main page. This shows the use of session cookies
 app.get('/', (req, res) => {
@@ -68,6 +69,41 @@ app.get('/', (req, res) => {
     console.log('uid', uid);
     return res.render('index.ejs', {uid, visits});
 });
+
+//login section start
+
+app.get('/login', (req, res) => {
+    return res.render('login.ejs');
+});
+
+app.post("/login", async (req, res) => {
+    try {
+      const username = req.body.username;
+      console.log("username", username);
+      //const password = req.body.password;
+      const db = await Connection.open(mongoUri, WW);
+      var existingUser = await db.collection(PROFILES).findOne({username: username});
+      console.log('user', existingUser);
+      if (!existingUser) {
+        req.flash('error', "Username does not exist - try again.");
+       return res.redirect('/login')
+      }
+        //   const match = await bcrypt.compare(password, existingUser.hash); 
+        //   console.log('match', match);
+        //   if (!match) {
+        //       req.flash('error', "Username or password incorrect - try again.");
+        //       return res.redirect('/login')
+        //   }
+      req.flash('info', 'successfully logged in as ' + username);
+      req.session.username = username;
+      req.session.logged_in = true;
+      console.log('login as', username);
+      return res.redirect("/profile/" + username);
+    } catch (error) {
+      req.flash('error', `Form submission error: ${error}`);
+      return res.redirect('/login')
+    }
+  });
 
 // shows how logins might work by setting a value in the session
 // This is a conventional, non-Ajax, login, so it redirects to main page 
@@ -98,8 +134,10 @@ app.post('/logout/', (req, res) => {
     console.log('in logout');
     req.session.uid = false;
     req.session.logged_in = false;
-    res.redirect('/');
+    res.redirect('/login/');
 });
+
+//login section end
 
 // two kinds of forms (GET and POST), both of which are pre-filled with data
 // from previous request, including a SELECT menu. Everything but radio buttons
@@ -117,8 +155,6 @@ app.post('/form/', (req, res) => {
 //profile section start
 
 //constants
-const WW = "wworld";
-const PROFILES = "profiles";
 const majors = ["Africana Studies", "American Studies", "Anthropology", 
         "Architecture", "Art History", "Astronomy", "Astrophysics", "Biochemistry",
         "Biological Sciences", "Chemical Physics", "Chemistry",
