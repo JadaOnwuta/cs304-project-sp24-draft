@@ -9,18 +9,27 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 </head>
 <body>
-        <p><label>Name: <%= data.name %></label></p>
-        <p><label>Username: <%= data.username %></label></p>
-        <p><label>Pronouns: <%= data.pronouns %></label></p>
-        <p><label>Class Year: <%= data.classyear %></label></p>
-        <p><label>Major: <%= data.major %></label></p>
-        <p><label>Minor: <%= data.minor %></label></p>
-        <p><label>Country: <%= data.country %></label></p>
-        <p><label>State: <%= data.state %></label></p>
-        <p><label>City: <%= data.city %></label></p>
-        <p><label>Bio: <%= data.bio %></label></p>
-        <p><label>Field: <%= data.field %></label></p>
-        <p><label>Interests: <%= data.interests %></label></p>
+    <div class="row" id="profile">
+        <div class="column">
+        <h2><label><%= data.name %></label></h2>
+        <p><label>Class of <%= data.classyear %> | <%= data.pronouns %></label></p>
+        <strong>Major:</strong>
+        <p><label><%= data.major %></label></p>
+        <strong>Minor:</strong>
+        <p><label><%= data.minor %></label></p>
+        <strong>Region:</strong>
+        <p><label><%= data.city %>, <%= data.state %>, <%= data.country %></label></p>
+    </div>
+    <div class="column">
+        <p class="spacing"></p>
+        <strong>Bio:</strong>
+        <p><label><%= data.bio %></label></p>
+        <strong>Field:</strong>
+        <p><label><%= data.field %></label></p>
+        <strong>Interests:</strong>
+        <p><label><%= data.interests %></label></p>
+    </div>
+    </div>
         <form 
         class="profile"
         method="POST"

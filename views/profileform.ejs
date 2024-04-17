@@ -9,9 +9,11 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 </head>
 <body>
+<div class="row">
     <form class="profileform"
           method="post"
           action="/profileform">
+      <div class="column">
       <p><label>Name*: <input name="name" placeholder="Wendy Wellesley" required></label></p>
 
       <p><label>Wellesley Username*: <input name="username" placeholder="ww123" required></label></p>
@@ -77,20 +79,22 @@
         </label></p>
 
         <p><label><input name="city" placeholder="City"></label></p>
-      
+        </div>
+        <div class="column">
         Bio:
-        <p><label><textarea rows="3" cols="30" name="bio" 
+        <p><label><textarea rows="3" cols="30" name="bio" class="box"
           placeholder="Type something..."></textarea></label></p>
         
         Field:
-        <p><label><textarea rows="3" cols="30" name="field" 
+        <p><label><textarea rows="3" cols="30" name="field" class="box"
           placeholder="Type something..."></textarea></label></p>
         
         Interests:
-        <p><label><textarea rows="3" cols="30" name="interests" 
+        <p><label><textarea rows="3" cols="30" name="interests" class="box"
           placeholder="Type something..."></textarea></label></p>
-
+        </div>
         <p><button type="submit">Submit</button></p>
     </form>
+  </div>
 </body>
 </html>
