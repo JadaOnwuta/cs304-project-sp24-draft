@@ -12,15 +12,15 @@
     <form class="profileform"
           method="post"
           action="/profileform">
-      <p><label>Name: <input name="name" placeholder="Wendy Wellesley" required></label></p>
+      <p><label>Name*: <input name="name" placeholder="Wendy Wellesley" required></label></p>
 
-      <p><label>Wellesley Username: <input name="username" placeholder="ww123" required></label></p>
+      <p><label>Wellesley Username*: <input name="username" placeholder="ww123" required></label></p>
       
       <p><label>Pronouns: <input name="pronouns" placeholder="they/them"></label></p>
       
-      <p><label>Class Year: <input name="classyear" placeholder="2000" required></label></p>
+      <p><label>Class Year*: <input name="classyear" placeholder="2000" required></label></p>
       
-      <p class="majors"><label>Major:
+      <p class="majors"><label>Major*:
           <select name="major" required>
             <option>choose major</option>
     
@@ -56,7 +56,7 @@
         Region:
         <p class="countries"><label>
           <select name="country" required>
-            <option>Country</option>
+            <option>Country*</option>
     
             <% countries.forEach( elt => { %>
                     <option value="<%= elt %>"><%= elt %></option>
