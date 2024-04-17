@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Node Starter</title>
+    <!-- load local stylesheet (css) -->
+    <link rel="stylesheet" href="/styles.css" />
+    <!-- loading jquery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+</head>
+<body>
+        <p><label>Name: <%= data.name %></label></p>
+        <p><label>Username: <%= data.username %></label></p>
+        <p><label>Pronouns: <%= data.pronouns %></label></p>
+        <p><label>Class Year: <%= data.classyear %></label></p>
+        <p><label>Major: <%= data.major %></label></p>
+        <p><label>Minor: <%= data.minor %></label></p>
+        <p><label>Country: <%= data.country %></label></p>
+        <p><label>State: <%= data.state %></label></p>
+        <p><label>City: <%= data.city %></label></p>
+        <p><label>Bio: <%= data.bio %></label></p>
+        <p><label>Field: <%= data.field %></label></p>
+        <p><label>Interests: <%= data.interests %></label></p>
+        <form 
+        class="profile"
+        method="POST"
+        action="/logout">
+            <p><button type="logout">Logout</button></p>
+        </form>
+</body>
+</html>
