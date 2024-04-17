@@ -72,10 +72,17 @@ app.get('/', (req, res) => {
 
 //login section start
 
+/**
+ * Displays login form so that existing users can acess profile
+ */
 app.get('/login', (req, res) => {
     return res.render('login.ejs');
 });
 
+/**
+ * Redirects existing users to profile -- includes session capabilities 
+ * for further functionalities
+ */
 app.post("/login", async (req, res) => {
     try {
       const username = req.body.username;
@@ -105,30 +112,6 @@ app.post("/login", async (req, res) => {
     }
   });
 
-// shows how logins might work by setting a value in the session
-// This is a conventional, non-Ajax, login, so it redirects to main page 
-app.post('/set-uid/', (req, res) => {
-    console.log('in set-uid');
-    req.session.uid = req.body.uid;
-    req.session.logged_in = true;
-    res.redirect('/');
-});
-
-// shows how logins might work via Ajax
-app.post('/set-uid-ajax/', (req, res) => {
-    console.log(Object.keys(req.body));
-    console.log(req.body);
-    let uid = req.body.uid;
-    if(!uid) {
-        res.send({error: 'no uid'}, 400);
-        return;
-    }
-    req.session.uid = req.body.uid;
-    req.session.logged_in = true;
-    console.log('logged in via ajax as ', req.body.uid);
-    res.send({error: false});
-});
-
 // conventional non-Ajax logout, so redirects
 app.post('/logout/', (req, res) => {
     console.log('in logout');
@@ -139,18 +122,6 @@ app.post('/logout/', (req, res) => {
 
 //login section end
 
-// two kinds of forms (GET and POST), both of which are pre-filled with data
-// from previous request, including a SELECT menu. Everything but radio buttons
-
-app.get('/form/', (req, res) => {
-    console.log('get form');
-    return res.render('signup.ejs', {action: '/form/', data: req.query });
-});
-
-app.post('/form/', (req, res) => {
-    console.log('post form');
-    return res.render('signup.ejs', {action: '/form/', data: req.body });
-});
 
 //profile section start
 
