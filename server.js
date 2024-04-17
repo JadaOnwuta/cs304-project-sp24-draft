@@ -309,6 +309,47 @@ app.get("/profile/:username", async (req, res) => {
 
 //profile section end
 
+// homepage section 
+
+async function homepageHelper(friends, profiles) {
+    let friendsList = [];
+
+    await friends.forEach( async (friend) => {
+        // console.log(friend);
+        const person = await profiles.findOne({username: friend});
+        friendsList.push(person);
+        console.log("loop" + friendsList);
+        // console.log(person);
+    });
+    
+    return friendsList;
+}
+
+app.get("/homepage/", async (req, res) => {
+    const db = await Connection.open(mongoUri, 'wworld');
+    const profiles = db.collection(PROFILES);
+
+    // require session 
+    // req.session.uid = req.body.uid;
+    // const UID = req.session.uid;
+    // req.session.logged_in = true;
+
+    // would be username: UID, but using 'canned' data for now
+    const personObject = await profiles.findOne({username: 'eb110'});
+    // console.log(personObject);
+    const friends = personObject.friends;
+    // const friends = personObject.friends.slice(-3); // get last 3 friends
+
+    const friendsList = await homepageHelper(friends, profiles);
+    console.log("finished: " + friendsList);
+
+    return res.render("homepage.ejs", {data: friendsList});
+
+});
+
+// homepage section end
+
+
 app.get('/staffList/', async (req, res) => {
     const db = await Connection.open(mongoUri, WMDB);
     let all = await db.collection(STAFF).find({}).sort({name: 1}).toArray();
