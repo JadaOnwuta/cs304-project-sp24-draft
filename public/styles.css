@@ -2,6 +2,9 @@ h1 {
   color: purple;
 }
 
+h2 {
+  color: rgb(115, 101, 152);
+}
 
 .profileform {
   color: black;
@@ -61,6 +64,10 @@ homepage that floats next to each other */
   content: "";
   display: table;
   clear: both;
+}
+
+.friend-interests {
+  list-style-type: circle;
 }
 
 #banner {

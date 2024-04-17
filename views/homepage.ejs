@@ -13,6 +13,7 @@
 
     <h1>Homepage</h1>
 
+    <h2>My Friends</h2>
     <div class="row-homepage">
         <% data.forEach( (friend) => { %>
             <div class="friend" onClick="location.href='/profile/<%=friend.username%>';" style="cursor: pointer;">
@@ -21,7 +22,13 @@
                     <li>Major: <%= friend.major %></li>
                     <li>Field: <%= friend.field %></li>
                     <li>State: <%= friend.state %></li>
-                    <li>Interests: <%= friend.interests %></li>
+                    <li>Interests: 
+                        <ul class="friend-interests">
+                            <% friend.interests.forEach( (interest) => { %>
+                                <li><%= interest%></li>
+                            <% }); %>
+                        </ul>
+
                 </ul>
             </div>
         <% }); %>
