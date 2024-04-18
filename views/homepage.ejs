@@ -10,22 +10,35 @@
 </head>
 <body>
     <%- include("partials/banner.ejs") %>
-    <%- include("partials/navbar.ejs") %>
 
     <h1>Homepage</h1>
 
-    <% data.forEach( (friend) => { %>
-        <div class="friend">
-            <h3><%= friend.name %></h3>
-            <ul> 
-                <li>Major: <%= friend.major %></li>
-                <li>State: <%= friend.state %></li>
-                <li>Interests: <%= friend.interests %></li>
-            </ul>
-        </div>
-    <% }); %>
+    <h2>My Friends</h2>
+    <div class="row-homepage">
+        <% data.forEach( (friend) => { %>
+            <div class="friend" onClick="location.href='/profile/<%=friend.username%>';" style="cursor: pointer;">
+                <h3><%= friend.name %> (Class of <%= friend.classyear %>)</h3>
+                <ul> 
+                    <li>Major: <%= friend.major %></li>
+                    <li>Field: <%= friend.field %></li>
+                    <li>State: <%= friend.state %></li>
+                    <li>Interests: 
+                        <ul class="friend-interests">
+                            <% friend.interests.forEach( (interest) => { %>
+                                <li><%= interest%></li>
+                            <% }); %>
+                        </ul>
 
-    <!-- load local js -->
-    <script src="/main.js"></script>
+                </ul>
+            </div>
+        <% }); %>
+    </div> 
+
+    <form 
+    class="profile"
+    method="POST"
+    action="/logout">
+        <p><button type="logout">Logout</button></p>
+    </form>
 </body>
 </html>

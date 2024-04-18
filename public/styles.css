@@ -2,6 +2,9 @@ h1 {
   color: purple;
 }
 
+h2 {
+  color: rgb(115, 101, 152);
+}
 
 .profileform {
   color: black;
@@ -37,17 +40,34 @@ h1 {
   font-size: small;
 }
 
-.spacing{
-  padding: 30px;
 img {
   border-radius: 50%;
   width: 40px;
+  float: left;    
+  margin: 0 15px 0 0;
 }
 
+/* Create three equal columns for each friend of the
+homepage that floats next to each other */
 .friend {
-  border-style: inset;
-  border-color: black;
-  border-width: medium;
+  float: left;
+  width: 30%;
+  padding: 10px;
+  height: 200px; 
+  border-style: dotted;
+  border-color: turquoise;
+  border-width: thin medium;
+}
+
+/* Clear floats after the columns */
+.row-homepage:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+.friend-interests {
+  list-style-type: circle;
 }
 
 #banner {

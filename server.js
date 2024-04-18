@@ -127,39 +127,39 @@ app.post('/logout/', (req, res) => {
 
 //constants
 const majors = ["Africana Studies", "American Studies", "Anthropology", 
-        "Architecture", "Art History", "Astronomy", "Astrophysics", "Biochemistry",
-        "Biological Sciences", "Chemical Physics", "Chemistry",
-        "Cinema and Media Studies", "Classical Civilization", "Classics", 
-        "Cognitive and Linguistic Sciences", "Comparative Literary Studies",
-        "Computer Science", "Data Science", "East Asian Languages and Cultures",
-        "East Asian Studies", "Economics", "Education Studies", 
-        "English and Creative Writing", "Environmental Studies",
-        "French & Francophone Studies", "French Cultural Studies", "Geosciences",
-        "German Studies", "History", "International Relations - Economics", 
-        "International Relations - History", 
-        "International Relations - Political Science", "Italian Studies", 
-        "Jewish Studies", "Latin American Studies", "Mathematics", 
-        "Media Arts and Sciences", "Medieval and Renaissance Studies",
-        "Middle Eastern Studies", "Music", "Neuroscience", 
-        "Peace and Justice Studies", "Philosophy", "Physics", "Political Science",
-        "Psychology", "Religion", "Russian", "Russian Area Studies", "Sociology",
-        "South Asia Studies", "Spanish and Portuguese", "Studio Art",
-        "Theatre Studies", "Women's and Gender Studies", "Undeclared"];
-    const minors = ["Africana Studies", "Anthropology", 
-        "Art History", "Asian American Studies", "Astronomy", "Biochemistry",
-        "Biological Sciences", "Chemistry", "Chinese Language and Culture",
-        "Cinema and Media Studies", "Comparative Race and Ethnicity",
-        "Computer Science", "Economics", "Education Studies", 
-        "English and Creative Writing", "Environmental Studies", "Geosciences",
-        "German Studies", "Global Portuguese Studies", "Health and Society",
-        "History", "Italian Studies", "Japanese Language and Culture",
-        "Jewish Studies", "Korean Language and Culture", "Latin American Studies",
-        "Latina/o Studies", "Mathematics", "Medieval and Renaissance Studies",
-        "Middle Eastern Studies", "Music", "Peace and Justice Studies", 
-        "Philosophy", "Physics", "Psychology", "Religion", "Russian", "Sociology",
-        "South Asia Studies", "Statistics", "Studio Art", 
-        "Teaching and Learning Studies", "Women's and Gender Studies"];
-    const countries = ["Afghanistan", "Albania", "Algeria", "Andorra",
+    "Architecture", "Art History", "Astronomy", "Astrophysics", "Biochemistry",
+    "Biological Sciences", "Chemical Physics", "Chemistry",
+    "Cinema and Media Studies", "Classical Civilization", "Classics", 
+    "Cognitive and Linguistic Sciences", "Comparative Literary Studies",
+    "Computer Science", "Data Science", "East Asian Languages and Cultures",
+    "East Asian Studies", "Economics", "Education Studies", 
+    "English and Creative Writing", "Environmental Studies",
+    "French & Francophone Studies", "French Cultural Studies", "Geosciences",
+    "German Studies", "History", "International Relations - Economics", 
+    "International Relations - History", 
+    "International Relations - Political Science", "Italian Studies", 
+    "Jewish Studies", "Latin American Studies", "Mathematics", 
+    "Media Arts and Sciences", "Medieval and Renaissance Studies",
+    "Middle Eastern Studies", "Music", "Neuroscience", 
+    "Peace and Justice Studies", "Philosophy", "Physics", "Political Science",
+    "Psychology", "Religion", "Russian", "Russian Area Studies", "Sociology",
+    "South Asia Studies", "Spanish and Portuguese", "Studio Art",
+    "Theatre Studies", "Women's and Gender Studies", "Undeclared"];
+const minors = ["Africana Studies", "Anthropology", 
+    "Art History", "Asian American Studies", "Astronomy", "Biochemistry",
+    "Biological Sciences", "Chemistry", "Chinese Language and Culture",
+    "Cinema and Media Studies", "Comparative Race and Ethnicity",
+    "Computer Science", "Economics", "Education Studies", 
+    "English and Creative Writing", "Environmental Studies", "Geosciences",
+    "German Studies", "Global Portuguese Studies", "Health and Society",
+    "History", "Italian Studies", "Japanese Language and Culture",
+    "Jewish Studies", "Korean Language and Culture", "Latin American Studies",
+    "Latina/o Studies", "Mathematics", "Medieval and Renaissance Studies",
+    "Middle Eastern Studies", "Music", "Peace and Justice Studies", 
+    "Philosophy", "Physics", "Psychology", "Religion", "Russian", "Sociology",
+    "South Asia Studies", "Statistics", "Studio Art", 
+    "Teaching and Learning Studies", "Women's and Gender Studies"];
+const countries = ["Afghanistan", "Albania", "Algeria", "Andorra",
     "Angola", "Antigua and Barbuda", "Argentina", "Armenia", "Australia",
     "Austria", "Azerbaijan", "The Bahamas", "Bahrain", "Bangladesh",
     "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan",
@@ -200,17 +200,18 @@ const majors = ["Africana Studies", "American Studies", "Anthropology",
     "United Kingdom", "United States", "Uruguay", "Uzbekistan",
     "Vanuatu", "Vatican City", "Venezuela", "Vietnam", "Yemen", 
     "Zambia", "Zimbabwe"];
-    const states = ["Alabama", "Alaska", "Arizona", "Arkansas", 
-        "California", "Colorado", "Connecticut", "D.C.", "Delaware", 
-        "Florida", "Georgia", "Hawaii", "Idaho", "Illinois", "Indiana", 
-        "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", 
-        "Massachusetts", "Michigan", "Minnesota", "Mississippi", 
-        "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire",
-        "New Jersey", "New Mexico", "New York", "North Carolina", 
-        "North Dakota", "Ohio", "Oklahoma", "Oregon", "Pennsylvania",
-        "Rhode Island", "South Carolina", "South Dakota", "Tennessee",
-        "Texas", "Utah", "Vermont", "Virginia", "Washington", 
-        "West Virginia", "Wisconsin", "Wyoming"];
+const states = ["Alabama", "Alaska", "Arizona", "Arkansas", 
+    "California", "Colorado", "Connecticut", "D.C.", "Delaware", 
+    "Florida", "Georgia", "Hawaii", "Idaho", "Illinois", "Indiana", 
+    "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", 
+    "Massachusetts", "Michigan", "Minnesota", "Mississippi", 
+    "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire",
+    "New Jersey", "New Mexico", "New York", "North Carolina", 
+    "North Dakota", "Ohio", "Oklahoma", "Oregon", "Pennsylvania",
+    "Rhode Island", "South Carolina", "South Dakota", "Tennessee",
+    "Texas", "Utah", "Vermont", "Virginia", "Washington", 
+    "West Virginia", "Wisconsin", "Wyoming"];
+    
 /**
  * displays blank user profile form to be filled out
  */
@@ -282,20 +283,6 @@ app.get("/profile/:username", async (req, res) => {
 
 // homepage section 
 
-async function homepageHelper(friends, profiles) {
-    let friendsList = [];
-
-    await friends.forEach( async (friend) => {
-        // console.log(friend);
-        const person = await profiles.findOne({username: friend});
-        friendsList.push(person);
-        console.log("loop" + friendsList);
-        // console.log(person);
-    });
-    
-    return friendsList;
-}
-
 app.get("/homepage/", async (req, res) => {
     const db = await Connection.open(mongoUri, 'wworld');
     const profiles = db.collection(PROFILES);
@@ -307,19 +294,17 @@ app.get("/homepage/", async (req, res) => {
 
     // would be username: UID, but using 'canned' data for now
     const personObject = await profiles.findOne({username: 'eb110'});
-    // console.log(personObject);
-    const friends = personObject.friends;
-    // const friends = personObject.friends.slice(-3); // get last 3 friends
+    const friends = personObject.friends.slice(-3); // get last 3 friends
 
-    const friendsList = await homepageHelper(friends, profiles);
-    console.log("finished: " + friendsList);
+    // find the friends in the db 
+    const friendsArray = await profiles.find({username: {$in: friends}}).toArray();
+    console.log("finished finding friends: " + friendsArray);
 
-    return res.render("homepage.ejs", {data: friendsList});
+    return res.render("homepage.ejs", {data: friendsArray});
 
 });
 
 // homepage section end
-
 
 app.get('/staffList/', async (req, res) => {
     const db = await Connection.open(mongoUri, WMDB);
