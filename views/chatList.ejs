@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8" />
+   <title>Chats</title>
+  
+   <!-- load local stylesheet (css) -->
+   <link rel="stylesheet" href="/styles.css" />
+   <!-- loading jquery -->
+   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+</head>
+<body>
+
+
+   <h1>Chats</h1>
+
+
+   <!-- load local js -->
+   <script src="/main.js"></script>
+   <!-- load a dropdown form containing all incomplete values -->
+   <h1><%= currentUser %>'s chats</h1>
+   <% if( (chats.length == 0)|| (chats == null) ) { %>
+      <p>Looks like you haven't chatted with anyone yet. Don't be afraid to be the first to reach out!</p>
+      
+      <% } else { %>
+         <ul>
+            <% chats.forEach( (elt) => {%>
+            <li><a href="/chat/<%= elt.receiver.userID %>"><%= elt.receiver.name %></a></li>
+            <% }); %>
+        </ul>
+      <% } %>
+   
+   <!-- load local js -->
+   <script src="/main.js"></script>
+
+
+
+
+</body>
+</html>
+
+

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8" />
+   <title>Select Movie</title>
+  
+   <!-- load local stylesheet (css) -->
+   <link rel="stylesheet" href="/styles.css" />
+   <!-- loading jquery -->
+   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+</head>
+<body>
+
+
+   <h1>Chats</h1>
+   <!-- load local js -->
+   <div>
+    <!--messages will go here -->
+    <% if((chats == undefined)) { %>
+    <ul>
+        <p>No chats yet. Send one!</p>
+
+    </ul>
+    <% } else { %>
+        <% chats.messages.forEach( (elt) => {%>
+            <li><%=elt.message%></li>
+            <li><%=elt.timestamp%></li>
+         <% }); %>
+    <% } %>
+   </div>
+   <script src="/main.js"></script>
+   <!-- load a dropdown form containing all incomplete values -->
+   <form method="post" action="/chat/<%=chats.receiver.userID%>">
+   
+   <textarea id="chat" name="message" rows="5" cols="50">
+
+   </textarea>
+   <input type="submit" value="Send">
+   </form>
+
+
+
+
+</body>
+</html>
+
+
+
+
+
+

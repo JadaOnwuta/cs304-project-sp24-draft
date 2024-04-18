@@ -328,6 +328,46 @@ app.get('/staffList/', async (req, res) => {
     return res.render('list.ejs', {listDescription: 'all staff', list: all});
 });
 
+//chat section start
+
+//renders chatlist
+app.get('/chats/', async (req, res) => {
+    let uid = req.session.username || 'unknown';
+    const db = await Connection.open(mongoUri, WW);
+    let chats = await db.collection("chats").find(
+        {'user.userID':{$eq: uid}
+    }).toArray();
+    console.log(chats);
+    return res.render("chatList.ejs", {chats: chats, currentUser: uid});
+});
+
+//renders current chats
+app.get('/chat/:username', async (req, res) => {
+    const db = await Connection.open(mongoUri, WW);
+    let uid = req.session.username || 'unknown';
+    let receiver = req.params.username;
+    let chats = await db.collection("chats").find(
+        {$and: [ {'user.userID': {$eq: uid}}, {'receiver.userID': {$eq: receiver}} ]
+    }).toArray();
+    console.log(chats[0]);
+    return res.render('chat.ejs', {chats: chats[0]});
+    
+});
+
+//chats
+app.post('/chat/:username', async (req, res) => {
+    let username = req.params.username;
+    let uid = req.session.username || 'unknown';
+    const db = await Connection.open(mongoUri, WW);
+    let time = new Date(Date.now());
+    time = time.toUTCString();
+    let content = req.body.message;
+    //and
+    await db.collection("chats").updateOne(
+        {$and: [ {'user.userID': {$eq: uid}}, {'receiver.userID': {$eq: username}} ]},
+        {$push: {messages: {sender: uid, timestamp: time, message: content}}})
+    res.redirect("/chat/" + username);
+});
 // ================================================================
 // postlude
 
