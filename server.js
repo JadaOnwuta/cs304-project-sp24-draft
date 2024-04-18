@@ -144,7 +144,7 @@ const majors = ["Africana Studies", "American Studies", "Anthropology",
     "Peace and Justice Studies", "Philosophy", "Physics", "Political Science",
     "Psychology", "Religion", "Russian", "Russian Area Studies", "Sociology",
     "South Asia Studies", "Spanish and Portuguese", "Studio Art",
-    "Theatre Studies", "Women's and Gender Studies", "Undeclared"];
+    "Theatre Studies", "Women's and Gender Studies", "Individual", "Undeclared"];
 const minors = ["Africana Studies", "Anthropology", 
     "Art History", "Asian American Studies", "Astronomy", "Biochemistry",
     "Biological Sciences", "Chemistry", "Chinese Language and Culture",
@@ -254,7 +254,7 @@ app.post('/profileform', async (req, res) => {
     let city = req.body.city;
     let bio = req.body.bio;
     let field = req.body.field;
-    let interests = req.body.interests;
+    let interests = req.body.interests.split(", ");
     
     //add profile to database
 

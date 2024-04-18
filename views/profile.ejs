@@ -9,6 +9,8 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 </head>
 <body>
+    <%- include("partials/banner.ejs") %>
+
     <div class="row" id="profile">
         <div class="column">
         <h2><label><%= data.name %></label></h2>
@@ -18,7 +20,19 @@
         <strong>Minor:</strong>
         <p><label><%= data.minor %></label></p>
         <strong>Region:</strong>
-        <p><label><%= data.city %>, <%= data.state %>, <%= data.country %></label></p>
+        <% if (data.city == ""){ %>
+            <% if (data.state == ""){ %>
+            <p><label><%= data.country %></label></p>
+            <% } else{ %>
+                <p><label><%= data.state %>, <%= data.country %></label></p>
+            <% } %>
+        <% } else{ %>
+            <% if (data.state == ""){ %>
+                <p><label><%= data.city %>, <%= data.country %></label></p>
+            <% } else{ %>
+                <p><label><%= data.city %>, <%= data.state %>, <%= data.country %></label></p>
+            <% } %>
+            <% } %>
     </div>
     <div class="column">
         <p class="spacing"></p>
@@ -27,7 +41,11 @@
         <strong>Field:</strong>
         <p><label><%= data.field %></label></p>
         <strong>Interests:</strong>
-        <p><label><%= data.interests %></label></p>
+        <ul>
+            <% data.interests.forEach( elt => { %>
+                <li><%= elt %></li>
+            <% }); %>
+        </ul>
     </div>
     </div>
         <form 
