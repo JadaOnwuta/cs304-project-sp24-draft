@@ -326,16 +326,12 @@ app.get("/homepage/", async (req, res) => {
 
 // homepage section end
 
-app.get('/staffList/', async (req, res) => {
-    const db = await Connection.open(mongoUri, WMDB);
-    let all = await db.collection(STAFF).find({}).sort({name: 1}).toArray();
-    console.log('len', all.length, 'first', all[0]);
-    return res.render('list.ejs', {listDescription: 'all staff', list: all});
-});
-
 //chat section start
 
-//renders chatlist
+/**
+ * Renders a list of all other users that the current user has chatted with. 
+ * Clicking on the users name will take you to the page to chat with that user.
+ */
 app.get('/chats/', async (req, res) => {
     let uid = req.session.username || 'unknown';
     const db = await Connection.open(mongoUri, WW);
@@ -343,23 +339,37 @@ app.get('/chats/', async (req, res) => {
         {username: uid}, {projection: {name: 1, _id: 0}});
     
     //get all chats that the user is in
-    let chats = await db.collection(CHATS).find({users: {userID: uid, name: currName.name}}).toArray();
+    let chats = await db.collection(CHATS).find({users: {userID: uid, 
+        name: currName.name}}).toArray();
     console.log(chats);
     return res.render("chatList.ejs", {chats: chats, currentUser: uid});
 });
 
+/**
+ * This function creates a new chat object in the chats collection
+ *  the first time the user tries to chat with another user.
+ * @param {*} uid - the current users id
+ * @param {*} friendUid - the id of the person the current user is chatting with
+ * @param {*} currUserName - the current users name
+ * @param {*} friendUserName - the name of the person the current user is chatting with
+ */
 async function newChatObj(uid, friendUid, currUserName, friendUserName){
     const db = await Connection.open(mongoUri, WW);
     console.log(uid);
     console.log(friendUid);
 
     await db.collection(CHATS).insertOne({
-        users: [{userID: uid, name: currUserName}, {userID: friendUid, name: friendUserName}],
+        users: [{userID: uid, name: currUserName}, 
+            {userID: friendUid, name: friendUserName}],
         messages : []
     })
 }
 
-//renders current chats
+/**
+ * renders the current chat messages between the current user
+ *  and whichever user's uid is in the url
+ * and a text input to write a chat
+ */
 app.get('/chat/:username', async (req, res) => {
     const db = await Connection.open(mongoUri, WW);
     let uid = req.session.username || 'unknown';
@@ -394,16 +404,20 @@ app.get('/chat/:username', async (req, res) => {
     
 });
 
-//chats
+/**
+ * updates the chat page when a message is sent and adds the message to 
+ * the corresponding chat object
+ */
 app.post('/chat/:username', async (req, res) => {
     let username = req.params.username;
     let uid = req.session.username || 'unknown';
     const db = await Connection.open(mongoUri, WW);
+    
     let currUserName = await db.collection(PROFILES).findOne(
         {username: uid}, {projection: {name: 1, _id: 0}});
     let friendUserName = await db.collection(PROFILES).findOne(
         {username: username}, {projection: {name: 1, _id: 0}});
-        
+    //get the current time to use as a timestamp for the message
     let time = new Date(Date.now());
     time = time.toUTCString();
     let content = req.body.message;
