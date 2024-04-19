@@ -83,3 +83,47 @@ homepage that floats next to each other */
 #info {
   color: green;
 }
+
+/* Chat.ejs css */
+#messages {
+  margin: auto;
+  align-self: center;
+  max-width: 80%;
+  border: #BFBFBF;
+}
+
+.singleChatCurr{
+  float: left;
+}
+
+.singleChatOther{
+  float: right;
+}
+
+.messageSender {
+  color: #3C4147;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  font-size: small;
+}
+
+.messageContentCurr {
+  color: #3C4147;
+  padding: 10px;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  background-color: #BFBFBF;
+  font-size: medium;
+}
+
+.messageContentOther {
+  color: #3C4147;
+  padding: 10px;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  background-color: #9EB2C6;
+  font-size: medium;
+}
+
+.messageTimestamp {
+  color: #7C8084;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  font-size: small;
+}

@@ -11,36 +11,48 @@
 </head>
 <body>
 
-
+   <%- include("partials/banner.ejs") %>
+   <%- include("partials/navbar.ejs") %>
    <h1>Chats</h1>
    <!-- load local js -->
-   <div>
+   <div id="messages">
     <!--messages will go here -->
     <% if((chats == undefined)|| (chats.messages.length == 0)) { %>
-    <div>
+    <div class="singleChat">
         <p>No chats yet. Send one!</p>
 
     </div>
     <% } else { %>
         <% chats.messages.forEach( (elt) => {%>
-         <div>
-            <span id="chatSender"><%=elt.sender%></span>
-            <span><%=elt.message%></span>
-            <span><%=elt.timestamp%></span>
-         </div>
+         <% if (chats.messages.sender == currUser){%>
+            <div class="singleChatCurr">
+               <span class="messageSender"><%=elt.sender%></span>
+               <span class='messageContentCurr'><%=elt.message%></span>
+               <span class="messageTimestamp"><%=elt.timestamp%></span>
+            </div>
+            <% } else { %>
+               <div class="singleChatOther">
+                  <span class="messageSender"><%=elt.sender%></span>
+                  <span class='messageContentOther'><%=elt.message%></span>
+                  <span class="messageTimestamp"><%=elt.timestamp%></span>
+               </div>
+            <% } %>
+         
          <% }); %>
     <% } %>
    </div>
    <script src="/main.js"></script>
+<div>
    <!-- load a dropdown form containing all incomplete values -->
    <form method="post" action="/chat/<%=chats.receiver.userID%>">
    
-   <textarea id="chat" name="message" rows="5" cols="50">
+   <textarea id="chatBox" name="message" rows="5" cols="50">
 
    </textarea>
    <input type="submit" value="Send">
-   </form>
 
+   </form>
+</div>
 
 
 

@@ -379,7 +379,7 @@ app.get('/chat/:username', async (req, res) => {
             {'receiver.userID': {$eq: receiver}} ]}).toArray();
     };
     console.log(chats[0]);
-    return res.render('chat.ejs', {chats: chats[0]});
+    return res.render('chat.ejs', {chats: chats[0], currUser: uid});
     
 });
 
