@@ -16,15 +16,18 @@
    <!-- load local js -->
    <div>
     <!--messages will go here -->
-    <% if((chats == undefined)) { %>
-    <ul>
+    <% if((chats == undefined)|| (chats.messages.length == 0)) { %>
+    <div>
         <p>No chats yet. Send one!</p>
 
-    </ul>
+    </div>
     <% } else { %>
         <% chats.messages.forEach( (elt) => {%>
-            <li><%=elt.message%></li>
-            <li><%=elt.timestamp%></li>
+         <div>
+            <span id="chatSender"><%=elt.sender%></span>
+            <span><%=elt.message%></span>
+            <span><%=elt.timestamp%></span>
+         </div>
          <% }); %>
     <% } %>
    </div>
