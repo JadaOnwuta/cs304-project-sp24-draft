@@ -314,7 +314,8 @@ app.get("/homepage/", async (req, res) => {
     const friends = personObject.friends.slice(-3); // get last 3 friends
 
     // find the friends in the db 
-    const friendsArray = await profiles.find({username: {$in: friends}}).toArray();
+    const friendsArray = await profiles.find(
+        {username: {$in: friends}}).toArray();
     console.log("finished finding friends: " + friendsArray);
 
     return res.render("homepage.ejs", {data: friendsArray});
@@ -343,14 +344,39 @@ app.get('/chats/', async (req, res) => {
     return res.render("chatList.ejs", {chats: chats, currentUser: uid});
 });
 
+async function newChatObj(uid, friendUid){
+    const db = await Connection.open(mongoUri, WW);
+    console.log(uid);
+    console.log(friendUid);
+    let currUserName = await db.collection("profiles").find(
+        {username: uid}).project({name:1}).toArray();
+        console.log(currUserName[0]);
+    let friendUserName = await db.collection("profiles").find(
+        {username: friendUid}).project({name:1}).toArray();
+
+    await db.collection("chats").insertOne({
+        user: {userID: uid, name: currUserName[0].name}, 
+        receiver: {userID: friendUid, name: friendUserName[0].name}, 
+        messages : []
+    })
+}
+
 //renders current chats
 app.get('/chat/:username', async (req, res) => {
     const db = await Connection.open(mongoUri, WW);
     let uid = req.session.username || 'unknown';
     let receiver = req.params.username;
+    //find the document that contains messages between thise two users
     let chats = await db.collection("chats").find(
         {$and: [ {'user.userID': {$eq: uid}}, {'receiver.userID': {$eq: receiver}} ]
     }).toArray();
+    //if there are no chats, create a chat between those two users
+    if (chats[0] == undefined){
+        await newChatObj(uid, receiver);
+        chats = await db.collection("chats").find(
+            {$and: [ {'user.userID': {$eq: uid}}, 
+            {'receiver.userID': {$eq: receiver}} ]}).toArray();
+    };
     console.log(chats[0]);
     return res.render('chat.ejs', {chats: chats[0]});
     
