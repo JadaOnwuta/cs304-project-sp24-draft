@@ -262,7 +262,7 @@ app.post('/profileform', async (req, res) => {
     const profiles = dbopen.collection(PROFILES);
     await profiles.insertOne({name: name, username: username,
         pronouns: pronouns, classyear: classyear, major: major, minor: minor, 
-        country: country, state: state, city: city, bio: bio, field: field, interests: interests});
+        country: country, state: state, city: city, bio: bio, field: field, interests: interests, friends: []});
     return res.redirect("/profile/" + username);
 });
 
@@ -301,22 +301,23 @@ app.get('/profile/edit/:username', async (req, res) => {
 // homepage section 
 
 app.get("/homepage/", async (req, res) => {
-    const db = await Connection.open(mongoUri, 'wworld');
+    const db = await Connection.open(mongoUri, WW);
     const profiles = db.collection(PROFILES);
 
     // require session 
-    // req.session.uid = req.body.uid;
-    // const UID = req.session.uid;
-    // req.session.logged_in = true;
+    let uid = req.session.username || 'unknown';
 
-    // would be username: UID, but using 'canned' data for now
-    const personObject = await profiles.findOne({username: 'eb110'});
+    // find the person who's logged in and all their friends
+    const personObject = await profiles.findOne({username: uid});
     const friends = personObject.friends.slice(-3); // get last 3 friends
 
     // find the friends in the db 
-    const friendsArray = await profiles.find(
-        {username: {$in: friends}}).toArray();
-    console.log("finished finding friends: " + friendsArray);
+    const friendsArray = await profiles.find({username: {$in: friends}}).toArray();
+    
+    // if this person doesn't have any friends yet, flash a message
+    if (friendsArray.length === 0) {
+        req.flash("info", "You don't have any friends yet! Go find some :)");
+    }
 
     return res.render("homepage.ejs", {data: friendsArray});
 
