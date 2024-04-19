@@ -279,6 +279,23 @@ app.get("/profile/:username", async (req, res) => {
     return res.render("profile.ejs", {data: profileInfo[0]});
 });
 
+/**
+ * Route to edit an existing profile
+ */
+app.get('/profile/edit/:username', async (req, res) => {
+    let username = req.params.username;
+
+    const dbopen = await Connection.open(mongoUri, WW);
+    const profiles = dbopen.collection(PROFILES);
+    const profileInfo = await profiles.find({username: username}).toArray();
+
+    return res.render('editProfile.ejs', {data: profileInfo[0],
+                                        majors: majors,
+                                        minors: minors,
+                                        countries: countries,
+                                        states: states});
+    });
+
 //profile section end
 
 // homepage section 
