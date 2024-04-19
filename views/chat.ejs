@@ -13,40 +13,44 @@
 
    <%- include("partials/banner.ejs") %>
    <%- include("partials/navbar.ejs") %>
-   <h1>Chats</h1>
    <!-- load local js -->
-   <div id="messages">
+   
     <!--messages will go here -->
+    <h2 class="chatHeader"><%=friendName%></h2>
+    <hr>
     <% if((chats == undefined)|| (chats.messages.length == 0)) { %>
-    <div class="singleChat">
+    
         <p>No chats yet. Send one!</p>
 
-    </div>
     <% } else { %>
+      <div id="messages">
         <% chats.messages.forEach( (elt) => {%>
-         <% if (chats.messages.sender == currUser){%>
+         <% if (elt.sender == currUser){%>
             <div class="singleChatCurr">
-               <span class="messageSender"><%=elt.sender%></span>
-               <span class='messageContentCurr'><%=elt.message%></span>
-               <span class="messageTimestamp"><%=elt.timestamp%></span>
+               <p class="messageSender"><%=elt.sender%></p>
+               <p class='messageContentCurr'><%=elt.message%></p>
+               <p class="messageTimestamp"><%=elt.timestamp%></p>
             </div>
+            
             <% } else { %>
                <div class="singleChatOther">
-                  <span class="messageSender"><%=elt.sender%></span>
-                  <span class='messageContentOther'><%=elt.message%></span>
-                  <span class="messageTimestamp"><%=elt.timestamp%></span>
+                  <p class="messageSender"><%=elt.sender%></p>
+                  <p class='messageContentOther'><%=elt.message%></p>
+                  <p class="messageTimestamp"><%=elt.timestamp%></p>
                </div>
+               
             <% } %>
          
          <% }); %>
+      </div>
     <% } %>
-   </div>
+
    <script src="/main.js"></script>
-<div>
+<div id="textbox">
    <!-- load a dropdown form containing all incomplete values -->
-   <form method="post" action="/chat/<%=chats.receiver.userID%>">
+   <form method="post" action="/chat/<%=friendUser%>">
    
-   <textarea id="chatBox" name="message" rows="5" cols="50">
+   <textarea id="chat" name="message" rows="5" cols="90">
 
    </textarea>
    <input type="submit" value="Send">

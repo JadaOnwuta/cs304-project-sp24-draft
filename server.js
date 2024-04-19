@@ -59,6 +59,7 @@ const DB = process.env.USER;
 const WW = "wworld";
 const STAFF = 'staff';
 const PROFILES = 'profiles';
+const CHATS = 'chats';
 
 // main page. This shows the use of session cookies
 app.get('/', (req, res) => {
@@ -338,26 +339,22 @@ app.get('/staffList/', async (req, res) => {
 app.get('/chats/', async (req, res) => {
     let uid = req.session.username || 'unknown';
     const db = await Connection.open(mongoUri, WW);
-    let chats = await db.collection("chats").find(
-        {'user.userID':{$eq: uid}
-    }).toArray();
+    let currName = await db.collection(PROFILES).findOne(
+        {username: uid}, {projection: {name: 1, _id: 0}});
+    
+    //get all chats that the user is in
+    let chats = await db.collection(CHATS).find({users: {userID: uid, name: currName.name}}).toArray();
     console.log(chats);
     return res.render("chatList.ejs", {chats: chats, currentUser: uid});
 });
 
-async function newChatObj(uid, friendUid){
+async function newChatObj(uid, friendUid, currUserName, friendUserName){
     const db = await Connection.open(mongoUri, WW);
     console.log(uid);
     console.log(friendUid);
-    let currUserName = await db.collection("profiles").find(
-        {username: uid}).project({name:1}).toArray();
-        console.log(currUserName[0]);
-    let friendUserName = await db.collection("profiles").find(
-        {username: friendUid}).project({name:1}).toArray();
 
-    await db.collection("chats").insertOne({
-        user: {userID: uid, name: currUserName[0].name}, 
-        receiver: {userID: friendUid, name: friendUserName[0].name}, 
+    await db.collection(CHATS).insertOne({
+        users: [{userID: uid, name: currUserName}, {userID: friendUid, name: friendUserName}],
         messages : []
     })
 }
@@ -367,19 +364,33 @@ app.get('/chat/:username', async (req, res) => {
     const db = await Connection.open(mongoUri, WW);
     let uid = req.session.username || 'unknown';
     let receiver = req.params.username;
+    let currUserName = await db.collection(PROFILES).findOne(
+        {username: uid}, {projection: {name: 1, _id: 0}});
+    let friendUserName = await db.collection(PROFILES).findOne(
+        {username: receiver}, {projection: {name: 1, _id: 0}});
+    console.log(currUserName.name);
     //find the document that contains messages between thise two users
-    let chats = await db.collection("chats").find(
-        {$and: [ {'user.userID': {$eq: uid}}, {'receiver.userID': {$eq: receiver}} ]
-    }).toArray();
+
+    let chats = await db.collection(CHATS).find(
+        {$and: [ {users: {$eq: {userID: uid, name: currUserName.name}}}, 
+            {users: {$eq: {userID: receiver, name: friendUserName.name}}} ]}
+    ).toArray();
     //if there are no chats, create a chat between those two users
     if (chats[0] == undefined){
-        await newChatObj(uid, receiver);
-        chats = await db.collection("chats").find(
-            {$and: [ {'user.userID': {$eq: uid}}, 
-            {'receiver.userID': {$eq: receiver}} ]}).toArray();
+        await newChatObj(uid, receiver, currUserName.name, friendUserName.name);
+        chats = await db.collection(CHATS).find(
+            {$and: [ {users: {$eq: {userID: uid, name: currUserName.name}}}, 
+                {users: {$eq: {userID: receiver, name: friendUserName.name}}} ]}
+                ).toArray();
     };
     console.log(chats[0]);
-    return res.render('chat.ejs', {chats: chats[0], currUser: uid});
+    console.log("currentUser: " + uid)
+    return res.render('chat.ejs', {
+        chats: chats[0], 
+        currUser: uid, 
+        friendUser: receiver,
+        currUserName: currUserName.name, 
+        friendName: friendUserName.name});
     
 });
 
@@ -388,12 +399,18 @@ app.post('/chat/:username', async (req, res) => {
     let username = req.params.username;
     let uid = req.session.username || 'unknown';
     const db = await Connection.open(mongoUri, WW);
+    let currUserName = await db.collection(PROFILES).findOne(
+        {username: uid}, {projection: {name: 1, _id: 0}});
+    let friendUserName = await db.collection(PROFILES).findOne(
+        {username: username}, {projection: {name: 1, _id: 0}});
+        
     let time = new Date(Date.now());
     time = time.toUTCString();
     let content = req.body.message;
     //and
-    await db.collection("chats").updateOne(
-        {$and: [ {'user.userID': {$eq: uid}}, {'receiver.userID': {$eq: username}} ]},
+    await db.collection(CHATS).updateOne(
+        {$and: [ {users: {$eq: {userID: uid, name: currUserName.name}}}, 
+            {users: {$eq: {userID: username, name: friendUserName.name}}} ]},
         {$push: {messages: {sender: uid, timestamp: time, message: content}}})
     res.redirect("/chat/" + username);
 });

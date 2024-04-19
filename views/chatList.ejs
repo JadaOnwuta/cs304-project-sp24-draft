@@ -12,20 +12,28 @@
 <body>
    
    <%- include("partials/banner.ejs") %>
+   <%- include("partials/navbar.ejs") %>
    <h1>Chats</h1>
 
+   
 
    <!-- load local js -->
    <script src="/main.js"></script>
    <!-- load a dropdown form containing all incomplete values -->
-   <h1><%= currentUser %>'s chats</h1>
+   <h2 class="chatHeader"><%= currentUser %>'s chats</h2>
+   <hr>
    <% if( (chats.length == 0)|| (chats == null) ) { %>
       <p>Looks like you haven't chatted with anyone yet. Don't be afraid to be the first to reach out!</p>
       
       <% } else { %>
          <ul>
             <% chats.forEach( (elt) => {%>
-            <li><a href="/chat/<%= elt.receiver.userID %>"><%= elt.receiver.name %></a></li>
+               <% elt.users.forEach( (u) => {%>
+                  <% if( u.userID !== currentUser ) { %>
+                     <li><a href="/chat/<%= u.userID %>"><%= u.name %></a></li>
+                     <% } %>
+                  <% }); %>
+            
             <% }); %>
         </ul>
       <% } %>

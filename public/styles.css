@@ -87,27 +87,31 @@ homepage that floats next to each other */
 /* Chat.ejs css */
 #messages {
   margin: auto;
-  align-self: center;
   max-width: 80%;
-  border: #BFBFBF;
+  clear:both;
 }
 
 .singleChatCurr{
-  float: left;
+  float: right;
+  clear:both;
 }
 
 .singleChatOther{
-  float: right;
+  float: left;
+  clear:both;
 }
 
 .messageSender {
   color: #3C4147;
+  margin-bottom: 0;
   font-family: Verdana, Geneva, Tahoma, sans-serif;
   font-size: small;
 }
 
 .messageContentCurr {
   color: #3C4147;
+  margin-top: 0;
+  margin-bottom: 0;
   padding: 10px;
   font-family: Verdana, Geneva, Tahoma, sans-serif;
   background-color: #BFBFBF;
@@ -116,6 +120,8 @@ homepage that floats next to each other */
 
 .messageContentOther {
   color: #3C4147;
+  margin-top: 0;
+  margin-bottom: 0;
   padding: 10px;
   font-family: Verdana, Geneva, Tahoma, sans-serif;
   background-color: #9EB2C6;
@@ -124,6 +130,27 @@ homepage that floats next to each other */
 
 .messageTimestamp {
   color: #7C8084;
+  margin-top: 0;
   font-family: Verdana, Geneva, Tahoma, sans-serif;
   font-size: small;
+}
+
+#textbox{
+  max-width: fit-content;
+  margin:auto;
+  clear:both;
+}
+
+.chatHeader{
+  margin: 20px;
+  color: #0C2142;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  font-size: x-large;
+  font-weight: bolder;
+}
+
+hr {
+  border-top: 2px solid #0C2142;
+  margin: 10px;
+
 }
