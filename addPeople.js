@@ -107,9 +107,6 @@ async function main() {
 
     // add a friends attribute for all people in db who don't have one yet
     // await updatePersonFriends(personal_db, "lk103", []);
-    // await updatePersonFriends(personal_db, "ic101", []);
-    // await updatePersonFriends(personal_db, "th103", []);
-    // await updatePersonFriends(personal_db, "eb108", []);
 
     console.log("Updated everyone!")
 
