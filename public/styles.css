@@ -1,9 +1,11 @@
 h1 {
-  color: purple;
+  color: #0C2142;
+  padding-left: 10px;
 }
 
 h2 {
-  color: rgb(115, 101, 152);
+  color: #0142A4;
+  padding-left: 10px;
 }
 
 .profileform {
@@ -38,6 +40,7 @@ h2 {
   color: black;
   font-family: Verdana, Geneva, Tahoma, sans-serif;
   font-size: small;
+  padding-left: 10px;
 }
 
 img {
@@ -73,11 +76,12 @@ homepage that floats next to each other */
 #banner {
   border-style: outset;
   border-color: black;
-  border-width: medium;
+  border-width: 1px;
+  width: 100%;
 }
 
 #banner-header {
-  color: blue;
+  color: #003974;
 }
 
 #info {
@@ -99,6 +103,7 @@ homepage that floats next to each other */
 .singleChatOther{
   float: left;
   clear:both;
+  
 }
 
 .messageSender {
@@ -116,6 +121,7 @@ homepage that floats next to each other */
   font-family: Verdana, Geneva, Tahoma, sans-serif;
   background-color: #BFBFBF;
   font-size: medium;
+  border-radius: 15px;
 }
 
 .messageContentOther {
@@ -126,6 +132,7 @@ homepage that floats next to each other */
   font-family: Verdana, Geneva, Tahoma, sans-serif;
   background-color: #9EB2C6;
   font-size: medium;
+  border-radius: 15px;
 }
 
 .messageTimestamp {
@@ -149,8 +156,55 @@ homepage that floats next to each other */
   font-weight: bolder;
 }
 
+.chatter{
+  padding: 10px;
+}
+
+table, td{
+  border-collapse: collapse;
+  border: 1px solid #ddd;
+  width: 30%;
+}
+
+.chatList{
+  margin: 20px;
+}
+
+a:link{
+ color: #003974;
+}
+
+a:visited{
+ color: #0142A4;
+}
+a:hover{
+ color: #000dff;
+}
+
 hr {
   border-top: 2px solid #0C2142;
   margin: 10px;
 
+}
+
+#gradient {
+  background: hsla(216, 99%, 32%, 1);
+
+background: linear-gradient(0deg, hsla(216, 99%, 32%, 1) 0%, hsla(217, 69%, 15%, 1) 100%);
+
+background: -moz-linear-gradient(0deg, hsla(216, 99%, 32%, 1) 0%, hsla(217, 69%, 15%, 1) 100%);
+
+background: -webkit-linear-gradient(0deg, hsla(216, 99%, 32%, 1) 0%, hsla(217, 69%, 15%, 1) 100%);
+
+filter: progid: DXImageTransform.Microsoft.gradient( startColorstr="#0142A4", endColorstr="#0C2142", GradientType=1 );
+}
+
+#loginBox{
+  width: 27%;
+  text-align: center;
+  background: rgb(255, 255, 255);
+  margin: auto;
+  border-radius: 20px;
+  padding: 20px;
+  margin-top: 200px;
 }

@@ -20,22 +20,28 @@
    <!-- load local js -->
    <script src="/main.js"></script>
    <!-- load a dropdown form containing all incomplete values -->
-   <h2 class="chatHeader"><%= currentUser %>'s chats</h2>
+   <h2><%= currentUser %>'s chats</h2>
    <hr>
    <% if( (chats.length == 0)|| (chats == null) ) { %>
       <p>Looks like you haven't chatted with anyone yet. Don't be afraid to be the first to reach out!</p>
       
       <% } else { %>
-         <ul>
+         
+         <table class="chatList">
             <% chats.forEach( (elt) => {%>
                <% elt.users.forEach( (u) => {%>
                   <% if( u.userID !== currentUser ) { %>
-                     <li><a href="/chat/<%= u.userID %>"><%= u.name %></a></li>
+                     <tr>
+                     <td class="chatter"><a href="/chat/<%= u.userID %>"><%= u.name %></a>
+                        <br>
+                     <!-- <%=elt.messages[0].message%></td> -->
+
+                  </tr>
                      <% } %>
                   <% }); %>
             
             <% }); %>
-        </ul>
+        </table>
       <% } %>
    
    <!-- load local js -->
