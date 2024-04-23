@@ -31,11 +31,15 @@
             <% chats.forEach( (elt) => {%>
                <% elt.users.forEach( (u) => {%>
                   <% if( u.userID !== currentUser ) { %>
-                     <tr>
-                     <td class="chatter"><a href="/chat/<%= u.userID %>"><%= u.name %></a>
+                     <tr onClick="location.href='/chat/<%=u.userID%>';">
+                        
+                     <td class="chatter">
+                        <img class="profilePic" src="/person-placeholder.jpeg" alt="profile pic">
+                        <span class="chatterName"><%= u.name %></span>
                         <br>
                         <% if (elt.messages[0] !== undefined) {%>
-                           <%=elt.messages[0].message%></td>
+                        <span class="chatPreview"><%=elt.messages[0].message%></span>
+                     </td>
                         <% } %>
 
                   </tr>

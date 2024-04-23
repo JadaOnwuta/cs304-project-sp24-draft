@@ -50,6 +50,14 @@ img {
   margin: 0 15px 0 0;
 }
 
+img.profilePic {
+  border-radius: 50%;
+  width: 40px;
+  float: left;    
+  margin: 0 15px 0 0;
+  border: 1px solid #5f5f5f;
+}
+
 /* Create three equal columns for each friend of the
 homepage that floats next to each other */
 .friend {
@@ -158,13 +166,24 @@ homepage that floats next to each other */
 
 .chatter{
   padding: 10px;
-  color: #3C4147;
 }
 
 table, td{
   border-collapse: collapse;
   border: 1px solid #ddd;
   width: 30%;
+}
+
+.chatterName{
+  color: #0142A4;
+  font-weight: bold;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+.chatPreview{
+  color: #5f5f5f;
+  margin-left: 5px;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
 
 .chatList{
