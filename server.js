@@ -272,12 +272,13 @@ app.post('/profileform', async (req, res) => {
  */
 app.get("/profile/:username", async (req, res) => {
     let username = req.params.username;
+    let currUser = req.session.username;
 
     const dbopen = await Connection.open(mongoUri, WW);
     const profiles = dbopen.collection(PROFILES);
     const profileInfo = await profiles.find({username: username}).toArray();
 
-    return res.render("profile.ejs", {data: profileInfo[0]});
+    return res.render("profile.ejs", {data: profileInfo[0], currUser: currUser});
 });
 
 app.get("/profile/edit/:username", async (req, res) => {
