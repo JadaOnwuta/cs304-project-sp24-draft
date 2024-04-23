@@ -49,7 +49,13 @@
     </div>
     </div>
 
-    <p><a href="/chat/<%= data.username %>">Chat with <%= data.name %>!</a></p>
+    <% if (data.username != currUser){ %>
+        <p><a href="/chat/<%= data.username %>">Chat with <%= data.name %>!</a></p>
+    <% } %>
+
+    <% if (data.username == currUser){ %>
+        <p><a href="/profile/edit/<%= data.username %>">Edit profile!</a></p>
+    <% } %>
 
         <form 
         class="profile"

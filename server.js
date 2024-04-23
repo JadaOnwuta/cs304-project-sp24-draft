@@ -280,11 +280,8 @@ app.get("/profile/:username", async (req, res) => {
     return res.render("profile.ejs", {data: profileInfo[0]});
 });
 
-/**
- * Route to edit an existing profile
- */
-app.get('/profile/edit/:username', async (req, res) => {
-    let username = req.params.username;
+app.get("/profile/edit/:username", async (req, res) => {
+    let username = req.session.username;
 
     const dbopen = await Connection.open(mongoUri, WW);
     const profiles = dbopen.collection(PROFILES);
@@ -296,6 +293,80 @@ app.get('/profile/edit/:username', async (req, res) => {
                                         countries: countries,
                                         states: states});
     });
+
+/**
+ * Route to update database with profile edits and display edited profile
+ */
+app.post("/profile/edit/:username", async (req, res) => {
+    let username = req.session.username;
+
+    //get document from database
+    const dbopen = await Connection.open(mongoUri, WW);
+    const profiles = dbopen.collection(PROFILES);
+    const profileInfo = await profiles.find({username: username}).toArray();
+    let data = profileInfo[0];
+
+    //set up for update
+    const filter = {username: username};
+    const updatesToAdd = {};
+    const options = {upsert: false};
+
+    //get data from form
+    let editName = req.body.name;
+    let editPronouns = req.body.pronouns;
+    let editClassyear = req.body.classyear;
+    let editMajor = [];
+    let major1 = req.body.major;
+    editMajor.push(major1);
+    let major2 = req.body.major2;
+    if (major2 != 'choose major'){
+        editMajor.push(major2);
+    }
+    let editMinor = req.body.minor;
+    if (editMinor == 'choose minor'){
+        editMinor = "";
+    }
+    let editCountry = req.body.country;
+    if (editCountry == 'Country'){
+        editCountry = "";
+    }
+    let editState = req.body.state;
+    if (editState == 'State (US)'){
+        editState = "";
+    }
+    let editCity = req.body.city;
+    let editBio = req.body.bio;
+    let editField = req.body.field;
+    let editInterests = req.body.interests.split(", ");
+
+    //check form data against document from database
+    let originalProfile = [data.name, data.pronouns, data.classyear, data.major, data.minor, 
+                data.country, data.state, data.city, data.bio, data.field, data.interests];
+    let editedProfile = [editName, editPronouns, editClassyear, editMajor, editMinor,
+                editCountry, editState, editCity, editBio, editField, editInterests];
+    let profileKeys = ["name", "pronouns", "classyear", "major", "minor", "country",
+                        "state", "city", "bio", "field", "interests"];
+    let i = 0;
+    profileKeys.forEach(elt => {
+        if (elt == "major" || elt == "interests"){
+            if (originalProfile[i].toString() != editedProfile[i].toString()){
+                updatesToAdd[elt] = editedProfile[i];
+            }
+        } else {
+            if (originalProfile[i] != editedProfile[i]){
+                updatesToAdd[elt] = editedProfile[i];
+            }
+        }
+        i++;
+    });
+
+    //update profile in database
+    let update = {$set: updatesToAdd};
+    await profiles.updateOne(filter, update, options);
+
+    //redirect to updated profile
+    return res.redirect("/profile/" + username);
+});
 
 //profile section end
 
