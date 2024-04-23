@@ -123,6 +123,18 @@ app.post('/logout/', (req, res) => {
 
 //login section end
 
+app.post('/add-friend/:uid', async (req, res) => {
+    friendUid = req.params.uid;
+    currUser = req.session.username;
+    const db = await Connection.open(mongoUri, WW);
+    let result = db.collection(PROFILES).updateOne({username:currUser},{$push:{friends: friendUid}});
+    if (result.modifiedCount == 1){
+        req.flash("info", "Added " + friendUid + " to friends");
+    }
+    return res.redirect('/profile/'+friendUid);
+
+})
+
 
 //profile section start
 
@@ -277,8 +289,9 @@ app.get("/profile/:username", async (req, res) => {
     const dbopen = await Connection.open(mongoUri, WW);
     const profiles = dbopen.collection(PROFILES);
     const profileInfo = await profiles.find({username: username}).toArray();
+    const myInfo = await profiles.find({username: currUser}).toArray();
 
-    return res.render("profile.ejs", {data: profileInfo[0], currUser: currUser});
+    return res.render("profile.ejs", {data: profileInfo[0], currUser: currUser, myData: myInfo[0]});
 });
 
 app.get("/profile/edit/:username", async (req, res) => {

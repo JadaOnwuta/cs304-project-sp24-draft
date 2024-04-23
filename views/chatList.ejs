@@ -34,7 +34,9 @@
                      <tr>
                      <td class="chatter"><a href="/chat/<%= u.userID %>"><%= u.name %></a>
                         <br>
-                     <!-- <%=elt.messages[0].message%></td> -->
+                        <% if (elt.messages[0] !== undefined) {%>
+                           <%=elt.messages[0].message%></td>
+                        <% } %>
 
                   </tr>
                      <% } %>
