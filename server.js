@@ -582,6 +582,10 @@ app.post('/chat/:username', async (req, res) => {
 
 //search section start
 
+/**
+ * populates page with profils that match the users search criteria
+ * TO-DO: search for more than one thing at a time?
+ */
 app.get('/search/', async (req, res) => {
     let term = req.query.term;
     let kind = req.query.kind;
