@@ -456,9 +456,9 @@ app.get("/do-select/", async (req, res) => {
         {username: {$ne: personObject.username}}     // filter out the user themselves
     ]}).toArray();
 
-    console.log("attribute: ", attribute);
-    console.log("personAttr: ", personAttr);
-    console.log(newFriendsArray);
+    // console.log("attribute: ", attribute);
+    // console.log("personAttr: ", personAttr);
+    // console.log(newFriendsArray);
 
     if (newFriendsArray.length === 0) {
         req.flash("info", "You're unique! Nobody has the same attribute yet. Try sorting by another feature :)");
