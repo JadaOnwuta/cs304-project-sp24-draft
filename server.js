@@ -123,6 +123,10 @@ app.post('/logout/', (req, res) => {
 
 //login section end
 
+/**
+ * Adds a person to the current users friendlist when a button is clicked
+ * on that persons profile page
+ */
 app.post('/add-friend/:uid', async (req, res) => {
     friendUid = req.params.uid;
     currUser = req.session.username;
@@ -275,7 +279,8 @@ app.post('/profileform', async (req, res) => {
     const profiles = dbopen.collection(PROFILES);
     await profiles.insertOne({name: name, username: username,
         pronouns: pronouns, classyear: classyear, major: major, minor: minor, 
-        country: country, state: state, city: city, bio: bio, field: field, interests: interests, friends: []});
+        country: country, state: state, city: city, bio: bio, field: field, 
+        interests: interests, friends: []});
     return res.redirect("/profile/" + username);
 });
 
@@ -290,8 +295,9 @@ app.get("/profile/:username", async (req, res) => {
     const profiles = dbopen.collection(PROFILES);
     const profileInfo = await profiles.find({username: username}).toArray();
     const myInfo = await profiles.find({username: currUser}).toArray();
-
-    return res.render("profile.ejs", {data: profileInfo[0], currUser: currUser, myData: myInfo[0]});
+    
+    return res.render("profile.ejs", {data: profileInfo[0], currUser: currUser, 
+        myData: myInfo[0]});
 });
 
 app.get("/profile/edit/:username", async (req, res) => {
@@ -652,7 +658,8 @@ app.get('/search/', async (req, res) => {
         let regInterest = new RegExp(term, 'i');
         
         //search for profiles with that specific interest!
-        let allInterests = await profiles.find({interests: {$regex: regInterest}}).toArray();
+        let allInterests = await profiles.find(
+            {interests: {$regex: regInterest}}).toArray();
 
         //console.log(allInterests);
 

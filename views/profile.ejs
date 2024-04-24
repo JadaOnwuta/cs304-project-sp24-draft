@@ -48,7 +48,23 @@
             <% }); %>
         </ul>
     </div>
+    <% if (data.username == currUser) {%>
+        <div class="column">
+            <p class="spacing"></p>
+            <strong>
+                Added you as a friend:
+            </strong>
+            <ul>
+                <% data.friends.forEach(f =>{%>
+                    <li><%= f%></li>
+                <% }); %>
+            </ul>
+        </div>
+
+    <% } %>
+    
     </div>
+    
 
     <% if (data.username != currUser){ %>
         <p><a href="/chat/<%= data.username %>">Chat with <%= data.name %>!</a></p>
