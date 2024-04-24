@@ -577,6 +577,80 @@ app.post('/chat/:username', async (req, res) => {
         {$push: {messages: {sender: uid, timestamp: time, message: content}}})
     res.redirect("/chat/" + username);
 });
+
+//chat section end
+
+//search section start
+
+app.get('/search/', async (req, res) => {
+    let term = req.query.term;
+    let kind = req.query.kind;
+
+    //opening connection to database
+    const db = await Connection.open(mongoUri, WW);
+    const profiles = db.collection(PROFILES);
+    
+    //search routes: username/name, interests, region
+    if (kind == "userName"){
+
+        let regName = new RegExp(term, 'i');
+
+        //look in database for BOTH Wellesley usernames and regular names
+        //change this to $or format
+        let allNames = await profiles.find({$or: [{username: {$regex: regName}}, 
+            {name: {$regex: regName}}]}).toArray();
+
+        //three routes: find no one, find one person, find multiple people
+        if (allNames.length == 0){
+            req.flash('info',`Sorry, no one with the user name: ${term} was found`);
+            //would it be better to redirect or re-render here?
+            return res.render("searchPage.ejs",{data:allNames});
+
+        }
+        else{
+            return res.render("searchPage.ejs",{data:allNames});
+        }
+    }
+    //lets check interests here -- might make it a click thing later on?
+    else if (kind == "interest"){
+
+        let regInterest = new RegExp(term, 'i');
+        
+        //search for profiles with that specific interest!
+        let allInterests = await profiles.find({interests: {$regex: regInterest}}).toArray();
+
+        console.log(allInterests);
+
+        if (allInterests.length == 0){
+            req.flash('info',`Sorry, no one with the interest: ${term} was found`);
+            //would it be better to redirect or re-render here?
+            return res.render("searchPage.ejs",{data:allInterests});
+        }
+        else{
+            return res.render("searchPage.ejs",{data:allInterests});
+        }
+    }else{
+        
+        let regRegion = new RegExp(term, 'i');
+        
+        //search for regions in city, state, and country -- makes life easier
+        let allRegion = await profiles.find({$or: [{country: regRegion}, 
+            {state: regRegion},{city: regRegion}]}).toArray();
+        
+        if (allRegion.length == 0){
+            req.flash('info',`Sorry, no one lives in ${term} yet!`);
+            //would it be better to redirect or re-render here?
+            return res.render("searchPage.ejs",{data:allRegion});
+        }
+        else{
+            return res.render("searchPage.ejs",{data:allRegion});
+        }
+
+
+    }
+});
+//search section end
+
 // ================================================================
 // postlude
 
