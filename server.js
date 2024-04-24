@@ -605,21 +605,52 @@ app.get('/search/', async (req, res) => {
             req.flash('info',`Sorry, no one with the user name: ${term} was found`);
             //would it be better to redirect or re-render here?
             return res.render("searchPage.ejs",{data:allNames});
-
         }
         else{
             return res.render("searchPage.ejs",{data:allNames});
         }
     }
-    //lets check interests here -- might make it a click thing later on?
-    else if (kind == "interest"){
+    //lets check class years here -- might make it a click thing later on?
+    else if (kind == "classYear"){
+
+        let regYear = new RegExp(term, 'i');
+        //search for profiles with that specific interest!
+        let allYears = await profiles.find({classyear: {$regex: regYear}}).toArray();
+
+        if (allYears.length == 0){
+            req.flash('info',`Sorry, no one with the class year: ${term} was found`);
+            //would it be better to redirect or re-render here?
+            return res.render("searchPage.ejs",{data:allYears});
+        }
+        else{
+            return res.render("searchPage.ejs",{data:allYears});
+        }
+    }else if (kind == "majorOrMinor"){
+
+        let regMajor = new RegExp(term, 'i');
+        
+        //search for profiles with that specific interest!
+        let allMajors = await profiles.find({$or: [{major: {$regex: regMajor}}, 
+            {minor: {$regex: regMajor}}]}).toArray();
+
+        //console.log(allInterests);
+
+        if (allMajors.length == 0){
+            req.flash('info',`Sorry, no one with the major: ${term} was found`);
+            //would it be better to redirect or re-render here?
+            return res.render("searchPage.ejs",{data:allMajors});
+        }
+        else{
+            return res.render("searchPage.ejs",{data:allMajors});
+        }
+    }else if (kind == "interest"){
 
         let regInterest = new RegExp(term, 'i');
         
         //search for profiles with that specific interest!
         let allInterests = await profiles.find({interests: {$regex: regInterest}}).toArray();
 
-        console.log(allInterests);
+        //console.log(allInterests);
 
         if (allInterests.length == 0){
             req.flash('info',`Sorry, no one with the interest: ${term} was found`);
@@ -628,6 +659,23 @@ app.get('/search/', async (req, res) => {
         }
         else{
             return res.render("searchPage.ejs",{data:allInterests});
+        }
+    }else if (kind == "field"){
+
+        let regField = new RegExp(term, 'i');
+        
+        //search for profiles with that specific interest!
+        let allFields = await profiles.find({field: {$regex: regField}}).toArray();
+
+        //console.log(allInterests);
+
+        if (allFields.length == 0){
+            req.flash('info',`Sorry, no one with the field: ${term} was found`);
+            //would it be better to redirect or re-render here?
+            return res.render("searchPage.ejs",{data:allFields});
+        }
+        else{
+            return res.render("searchPage.ejs",{data:allFields});
         }
     }else{
         
@@ -638,15 +686,13 @@ app.get('/search/', async (req, res) => {
             {state: regRegion},{city: regRegion}]}).toArray();
         
         if (allRegion.length == 0){
-            req.flash('info',`Sorry, no one lives in ${term} yet!`);
+            req.flash('info',`Sorry, no one lives in: ${term}!`);
             //would it be better to redirect or re-render here?
             return res.render("searchPage.ejs",{data:allRegion});
         }
         else{
             return res.render("searchPage.ejs",{data:allRegion});
         }
-
-
     }
 });
 //search section end
