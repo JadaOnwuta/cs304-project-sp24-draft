@@ -1,0 +1,14 @@
+<div class="friend" onClick="location.href='/profile/<%=friend.username%>';" style="cursor: pointer;">
+    <h3><%= friend.name %> (Class of <%= friend.classyear %>)</h3>
+    <ul> 
+        <li>Major: <%= friend.major %></li>
+        <li>Field: <%= friend.field %></li>
+        <li>State: <%= friend.state %></li>
+        <li>Interests: 
+            <ul class="friend-interests">
+                <% friend.interests.forEach( (interest) => { %>
+                    <li><%= interest%></li>
+                <% }); %>
+            </ul>
+    </ul>
+</div>
