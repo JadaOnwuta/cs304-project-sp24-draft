@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Wellesley World</title>
+    <!-- load local stylesheet (css) -->
+    <link rel="stylesheet" href="/styles.css" />
+    <!-- loading jquery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+</head>
+<body>
+    <%- include("partials/banner.ejs") %>
+    <%- include("partials/flashes.ejs") %>
+    <%- include("partials/navbar.ejs") %>
+    <%- include("partials/searchbar.ejs") %>
+
+    <h1>Homepage</h1>
+
+    <h2>Your Searches:</h2>
+    <div class="row-homepage">
+        <% data.forEach( (friend) => { %>
+            <div class="friend" onClick="location.href='/profile/<%=friend.username%>';" style="cursor: pointer;">
+                <h3><%= friend.name %> (Class of <%= friend.classyear %>)</h3>
+                <ul> 
+                    <li>Major: <%= friend.major %></li>
+                    <li>Field: <%= friend.field %></li>
+                    <li>State: <%= friend.state %></li>
+                    <li>Interests: 
+                        <ul class="friend-interests">
+                            <% friend.interests.forEach( (interest) => { %>
+                                <li><%= interest%></li>
+                            <% }); %>
+                        </ul>
+
+                </ul>
+            </div>
+        <% }); %>
+    </div> 
+
+</body>
+</html>

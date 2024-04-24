@@ -386,13 +386,15 @@ app.post("/profile/edit/:username", async (req, res) => {
 
 // homepage section 
 
-app.get("/homepage/", async (req, res) => {
-    const db = await Connection.open(mongoUri, WW);
-    const profiles = db.collection(PROFILES);
-
-    // require session 
-    let uid = req.session.username || 'unknown';
-
+/**
+ * Helper function to load the three friends that the user last added  
+ * @param {object} req 
+ * @param {String} uid the uid of the user
+ * @param {database} profiles profiles collection of wworld db
+ * @returns personObject (the user's information as a dictionary) and 
+ * friendsArray (their last three friends that they added)
+ */
+async function homepageHelper(req, uid, profiles) {
     // find the person who's logged in and all their friends
     const personObject = await profiles.findOne({username: uid});
     const friends = personObject.friends.slice(-3); // get last 3 friends
@@ -405,8 +407,70 @@ app.get("/homepage/", async (req, res) => {
         req.flash("info", "You don't have any friends yet! Go find some :)");
     }
 
-    return res.render("homepage.ejs", {data: friendsArray});
+    return [personObject, friendsArray];
+}
 
+/**
+ * (GET) Shows the homepage, where the user can see their recently-added 
+ * friends and friend recommendations
+ */
+app.get("/homepage/", async (req, res) => {
+    const db = await Connection.open(mongoUri, WW);
+    const profiles = db.collection(PROFILES);
+
+    // require session 
+    let uid = req.session.username || 'unknown';
+
+    const [personObject, friendsArray] = await homepageHelper(req, uid, profiles);
+
+    const data = {
+        friends: friendsArray,
+        newFriends: [] 
+    }
+
+    return res.render("homepage.ejs", {data: data});
+});
+
+/**
+ * (GET) Takes the menu selection and renders the homepage with the 
+ * recommended friends information 
+ */
+app.get("/do-select/", async (req, res) => {
+    const db = await Connection.open(mongoUri, WW);
+    const profiles = db.collection(PROFILES);
+
+    // require session 
+    let uid = req.session.username || 'unknown';
+
+    const [personObject, friendsArray] = await homepageHelper(req, uid, profiles);
+    
+    // find new people by field to recommend as a friend 
+    let attribute = req.query.menu; // get selected attribute
+    if (attribute === "location") {
+        attribute = "state";
+    }
+    const personAttr = personObject[attribute]; // find the user's attribute (currently, hardcoding field)
+    let newFriendsArray = await profiles.find({$and: [
+        {[attribute]: {$eq: personAttr}},     // find people with the same attribute
+        {friends: {$ne: personObject.username}},     // filter out old friends
+        {username: {$ne: personObject.username}}     // filter out the user themselves
+    ]}).toArray();
+
+    console.log("attribute: ", attribute);
+    console.log("personAttr: ", personAttr);
+    console.log(newFriendsArray);
+
+    if (newFriendsArray.length === 0) {
+        req.flash("info", "You're unique! Nobody has the same attribute yet. Try sorting by another feature :)");
+        newFriendsArray = [];
+    } 
+
+    const data = {
+        friends: friendsArray,
+        newFriends: newFriendsArray
+    }
+
+    return res.render("homepage.ejs", {data: data});
 });
 
 // homepage section end
@@ -513,6 +577,80 @@ app.post('/chat/:username', async (req, res) => {
         {$push: {messages: {sender: uid, timestamp: time, message: content}}})
     res.redirect("/chat/" + username);
 });
+
+//chat section end
+
+//search section start
+
+app.get('/search/', async (req, res) => {
+    let term = req.query.term;
+    let kind = req.query.kind;
+
+    //opening connection to database
+    const db = await Connection.open(mongoUri, WW);
+    const profiles = db.collection(PROFILES);
+    
+    //search routes: username/name, interests, region
+    if (kind == "userName"){
+
+        let regName = new RegExp(term, 'i');
+
+        //look in database for BOTH Wellesley usernames and regular names
+        //change this to $or format
+        let allNames = await profiles.find({$or: [{username: {$regex: regName}}, 
+            {name: {$regex: regName}}]}).toArray();
+
+        //three routes: find no one, find one person, find multiple people
+        if (allNames.length == 0){
+            req.flash('info',`Sorry, no one with the user name: ${term} was found`);
+            //would it be better to redirect or re-render here?
+            return res.render("searchPage.ejs",{data:allNames});
+
+        }
+        else{
+            return res.render("searchPage.ejs",{data:allNames});
+        }
+    }
+    //lets check interests here -- might make it a click thing later on?
+    else if (kind == "interest"){
+
+        let regInterest = new RegExp(term, 'i');
+        
+        //search for profiles with that specific interest!
+        let allInterests = await profiles.find({interests: {$regex: regInterest}}).toArray();
+
+        console.log(allInterests);
+
+        if (allInterests.length == 0){
+            req.flash('info',`Sorry, no one with the interest: ${term} was found`);
+            //would it be better to redirect or re-render here?
+            return res.render("searchPage.ejs",{data:allInterests});
+        }
+        else{
+            return res.render("searchPage.ejs",{data:allInterests});
+        }
+    }else{
+        
+        let regRegion = new RegExp(term, 'i');
+        
+        //search for regions in city, state, and country -- makes life easier
+        let allRegion = await profiles.find({$or: [{country: regRegion}, 
+            {state: regRegion},{city: regRegion}]}).toArray();
+        
+        if (allRegion.length == 0){
+            req.flash('info',`Sorry, no one lives in ${term} yet!`);
+            //would it be better to redirect or re-render here?
+            return res.render("searchPage.ejs",{data:allRegion});
+        }
+        else{
+            return res.render("searchPage.ejs",{data:allRegion});
+        }
+
+
+    }
+});
+//search section end
+
 // ================================================================
 // postlude
 

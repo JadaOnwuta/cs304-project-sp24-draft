@@ -12,12 +12,13 @@
     <%- include("partials/banner.ejs") %>
     <%- include("partials/flashes.ejs") %>
     <%- include("partials/navbar.ejs") %>
+    <%- include("partials/searchbar.ejs") %>
 
     <h1>Homepage</h1>
 
-    <h2>My Friends</h2>
+    <h2>My Friends (Recently Added)</h2>
     <div class="row-homepage">
-        <% data.forEach( (friend) => { %>
+        <% data.friends.forEach( (friend) => { %>
             <div class="friend" onClick="location.href='/profile/<%=friend.username%>';" style="cursor: pointer;">
                 <h3><%= friend.name %> (Class of <%= friend.classyear %>)</h3>
                 <ul> 
@@ -31,6 +32,40 @@
                             <% }); %>
                         </ul>
 
+                </ul>
+            </div>
+        <% }); %>
+    </div> 
+
+    <h2>Friend Recommendations</h2>
+    <div id="content">    
+        <form method="GET" action="/do-select/">
+            <label for="menu">Find friends by:</label>
+            <select id="menu" name="menu">
+                <option value="none">Choose One</option>
+                <option value="field">Field</option>
+                <option value="interests">Interests</option>
+                <option value="location">Location</option>
+                <option value="major">Major</option>
+            </select>
+            <input type="submit" value="Choose">
+        </form>
+    </div>
+
+    <div class="row-homepage">
+        <% data.newFriends.forEach( (friend) => { %>
+            <div class="friend" onClick="location.href='/profile/<%=friend.username%>';" style="cursor: pointer;">
+                <h3><%= friend.name %> (Class of <%= friend.classyear %>)</h3>
+                <ul> 
+                    <li>Major: <%= friend.major %></li>
+                    <li>Field: <%= friend.field %></li>
+                    <li>State: <%= friend.state %></li>
+                    <li>Interests: 
+                        <ul class="friend-interests">
+                            <% friend.interests.forEach( (interest) => { %>
+                                <li><%= interest%></li>
+                            <% }); %>
+                        </ul>
                 </ul>
             </div>
         <% }); %>
