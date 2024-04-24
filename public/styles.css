@@ -234,3 +234,18 @@ filter: progid: DXImageTransform.Microsoft.gradient( startColorstr="#0142A4", en
   padding: 20px;
   margin-top: 200px;
 }
+
+/* link css */
+
+a:link, a:visited {
+  background-color: #296dd2;
+  color: white;
+  padding: 14px 25px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+}
+
+a:hover, a:active {
+  background-color: #0058db;
+}
