@@ -86,13 +86,13 @@
         <% if (!data.picture){ %>
             <p><a href="/profile/upload/<%= data.username %>">Add a profile picture!</a></p>
         <% } %>
-    <% } %>
-
         <form 
         class="profile"
         method="POST"
         action="/logout">
             <p><button type="logout">Logout</button></p>
         </form>
+    <% } %>
+
 </body>
 </html>
