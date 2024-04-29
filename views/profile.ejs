@@ -14,33 +14,37 @@
 
     <div class="row" id="profile">
         <div class="column">
-        <h2><label><%= data.name %></label></h2>
-        <p><label>Class of <%= data.classyear %> | <%= data.pronouns %></label></p>
+        <% if (data.picture){ %>
+            <br>
+            <img class="profilepic" src="<%= data.picture.filepath %>" alt="<%= data.picture.alt %>">
+        <% } %>
+        <h2><%= data.name %></h2>
+        <p>Class of <%= data.classyear %> | <%= data.pronouns %></p>
         <strong>Major:</strong>
-        <p><label><%= data.major %></label></p>
+        <p><%= data.major %></p>
         <strong>Minor:</strong>
-        <p><label><%= data.minor %></label></p>
+        <p><%= data.minor %></p>
         <strong>Region:</strong>
         <% if (data.city == ""){ %>
             <% if (data.state == ""){ %>
-            <p><label><%= data.country %></label></p>
+            <p><%= data.country %></p>
             <% } else{ %>
-                <p><label><%= data.state %>, <%= data.country %></label></p>
+                <p><%= data.state %>, <%= data.country %></p>
             <% } %>
         <% } else{ %>
             <% if (data.state == ""){ %>
-                <p><label><%= data.city %>, <%= data.country %></label></p>
+                <p><%= data.city %>, <%= data.country %></p>
             <% } else{ %>
-                <p><label><%= data.city %>, <%= data.state %>, <%= data.country %></label></p>
+                <p><%= data.city %>, <%= data.state %>, <%= data.country %></p>
             <% } %>
             <% } %>
     </div>
     <div class="column">
         <p class="spacing"></p>
         <strong>Bio:</strong>
-        <p><label><%= data.bio %></label></p>
+        <p><%= data.bio %></p>
         <strong>Field:</strong>
-        <p><label><%= data.field %></label></p>
+        <p><%= data.field %></p>
         <strong>Interests:</strong>
         <ul>
             <% data.interests.forEach( elt => { %>
@@ -79,6 +83,9 @@
 
     <% if (data.username == currUser){ %>
         <p><a href="/profile/edit/<%= data.username %>">Edit profile!</a></p>
+        <% if (!data.picture){ %>
+            <p><a href="/profile/upload/<%= data.username %>">Add a profile picture!</a></p>
+        <% } %>
     <% } %>
 
         <form 

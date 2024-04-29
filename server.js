@@ -15,7 +15,7 @@ const bodyParser = require('body-parser');
 const cookieSession = require('cookie-session');
 const flash = require('express-flash');
 const multer = require('multer');
-
+const fs = require('node:fs/promises');
 // our modules loaded from cwd
 
 const { Connection } = require('./connection');
@@ -52,6 +52,9 @@ app.use(cookieSession({
     maxAge: 24 * 60 * 60 * 1000 // 24 hours
 }));
 
+//configure multer for file upload
+app.use('/uploads', express.static('uploads'));
+
 // ================================================================
 // custom routes here
 
@@ -60,6 +63,7 @@ const WW = "wworld";
 const STAFF = 'staff';
 const PROFILES = 'profiles';
 const CHATS = 'chats';
+const FILES = 'files';
 
 // main page. This shows the use of session cookies
 app.get('/', (req, res) => {
@@ -300,6 +304,9 @@ app.get("/profile/:username", async (req, res) => {
         myData: myInfo[0]});
 });
 
+/**
+ * Route to edit profile page
+ */
 app.get("/profile/edit/:username", async (req, res) => {
     let username = req.session.username;
 
@@ -382,6 +389,102 @@ app.post("/profile/edit/:username", async (req, res) => {
 
     //update profile in database
     let update = {$set: updatesToAdd};
+    await profiles.updateOne(filter, update, options);
+
+    //redirect to updated profile
+    return res.redirect("/profile/" + username);
+});
+
+//set up for profile picture uploads
+
+/* input is an (optional) date object. Returns a string like 123456 
+for 56 seconds past 12:34. If the argument is omitted, the current
+time is used.
+*/
+function timeString(dateObj) {
+    if( !dateObj) {
+        dateObj = new Date();
+    }
+    // convert val to two-digit string
+    d2 = (val) => val < 10 ? '0'+val : ''+val;
+    let hh = d2(dateObj.getHours())
+    let mm = d2(dateObj.getMinutes())
+    let ss = d2(dateObj.getSeconds())
+    return hh+mm+ss
+}
+
+/**
+ * Configure milter storage to store files on disk
+ */
+var storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+      cb(null, 'uploads')
+    },
+    filename: function (req, file, cb) {
+        let parts = file.originalname.split('.');
+        let ext = parts[parts.length-1];
+        let hhmmss = timeString();
+        cb(null, file.fieldname + '-' + hhmmss + '.' + ext);
+    }
+})
+
+/**
+ * Middleware function.
+ * Takes a dictionary of storage
+ * specifications and a filesize limit
+ */
+var upload = multer({ storage: storage,
+    // max fileSize in bytes, causes an ugly error
+    limits: {fileSize: 3000000}});
+
+/**
+ * Route to upload profile picture
+ */
+app.get('/profile/upload/:username/', (req, res) => {
+    let currUser = req.session.username;
+    return res.render('fileUpload.ejs', {currUser: currUser});
+});
+/**
+ * Route to upload profile picture
+ */
+app.post('/profile/upload/:username/', upload.single('photo'), async (req, res) => {
+    let username = req.session.username;
+
+    console.log('uploaded data', req.body);
+    console.log('file', req.file);
+
+    //check that file is png or jpg/jpeg
+    if (!(req.file.filename.includes('.png') || req.file.filename.includes('.jpg') 
+        || req.file.filename.includes('.jpeg'))){
+            req.flash('error', "Please submit file in png or jpg/jpeg format");
+            return res.redirect('/');
+    }
+
+    //change permissions of file to be world-readable
+    let val = await fs.chmod('uploads/'+req.file.filename, 0o664);
+    console.log('chmod val', val);
+
+    //insert file data into mongodb
+    const db = await Connection.open(mongoUri, WW);
+    const results = await db.collection(FILES)
+        .insertOne({file: req.file});
+    console.log('insertOne result', results);
+
+    //check if person has existing picture, delete if so
+    const profiles = db.collection(PROFILES);
+    const user = await profiles.find({username: username}).toArray();
+    let userPicStatus = user[0].picture;
+    if (userPicStatus){
+        let filename = userPicStatus.filename;
+        await db.collection(FILES).deleteOne({"file.filename": filename});
+    }
+
+    //update file upload status in profile
+    const filter = {username: username};
+    const update = {$set: {picture: 
+        {picStatus: 'uploaded', filepath: '/uploads/'+req.file.filename, 
+        alt: req.body.alt, filename: req.file.filename}}};
+    const options = {upsert: false};
     await profiles.updateOne(filter, update, options);
 
     //redirect to updated profile
@@ -710,6 +813,18 @@ app.get('/search/', async (req, res) => {
 
 // ================================================================
 // postlude
+
+app.use((err, req, res, next) => {
+    console.log('error', err);
+    if(err.code === 'LIMIT_FILE_SIZE') {
+        console.log('file too big')
+        req.flash('error', 'file too big')
+        res.redirect('/')
+    } else {
+        console.error(err.stack)
+        res.status(500).send('Something broke!')
+    }
+})
 
 const serverPort = cs304.getPort(8080);
 

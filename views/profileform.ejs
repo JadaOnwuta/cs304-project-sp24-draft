@@ -80,20 +80,21 @@
           </select>
         </label></p>
 
-        <p><label><input name="city" placeholder="City"></label></p>
+        <p><label>City: <input name="city" placeholder="Type your city"></label></p>
         </div>
         <div class="column">
-        Bio:
-        <p><label><textarea rows="3" cols="30" name="bio" class="box"
-          placeholder="Type something..."></textarea></label></p>
         
-        Field:
-        <p><label><textarea rows="3" cols="30" name="field" class="box"
-          placeholder="Type something..."></textarea></label></p>
+        <label for="bio">Bio:</label>
+        <p><textarea rows="3" cols="30" name="bio" id="bio" class="box"
+          placeholder="Type something..."></textarea></p>
         
-        Interests:
-        <p><label><textarea rows="3" cols="30" name="interests" class="box"
-          placeholder="Type something..."></textarea></label></p>
+        <label for="field">Field:</label>
+        <p><textarea rows="3" cols="30" name="field" id="field" class="box"
+          placeholder="Type something..."></textarea></p>
+        
+        <label for="interests">Interests:</label>
+        <p><textarea rows="3" cols="30" name="interests" id="interests" class="box"
+          placeholder="Type something..."></textarea></p>
         </div>
         <p><button type="submit">Submit</button></p>
     </form>
