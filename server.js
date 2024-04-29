@@ -65,6 +65,8 @@ const PROFILES = 'profiles';
 const CHATS = 'chats';
 const FILES = 'files';
 
+bcrypt = require('bcrypt');
+
 // main page. This shows the use of session cookies
 app.get('/', (req, res) => {
     let uid = req.session.uid || 'unknown';
@@ -91,39 +93,103 @@ app.get('/login', (req, res) => {
 app.post("/login", async (req, res) => {
     try {
       const username = req.body.username;
-      console.log("username", username);
-      //const password = req.body.password;
+      const password = req.body.password;
+
+      //make sure user is in the database
       const db = await Connection.open(mongoUri, WW);
       var existingUser = await db.collection(PROFILES).findOne({username: username});
-      console.log('user', existingUser);
+
+      //route for people with no passwords
+      if(password == "" && existingUser.password){
+        req.flash('error', `Please enter your password below!`);
+        return res.redirect("/login");
+      }
+
+      if(password == "" && !existingUser.password){
+        req.flash('error', `It seems like you need a password! Redirecting...`);
+        return res.redirect("/password/edit/"+username);
+      }
+
       if (!existingUser) {
         req.flash('error', "Username does not exist - try again.");
-       return res.redirect('/login')
-      }
-        //   const match = await bcrypt.compare(password, existingUser.hash); 
-        //   console.log('match', match);
-        //   if (!match) {
-        //       req.flash('error', "Username or password incorrect - try again.");
-        //       return res.redirect('/login')
-        //   }
-      req.flash('info', 'successfully logged in as ' + username);
-      req.session.username = username;
-      req.session.logged_in = true;
-      console.log('login as', username);
-      return res.redirect("/profile/" + username);
+        return res.redirect('/login');}
+        
+        //This line is making logins take forever
+        const match = await bcrypt.compare(password, existingUser.password); 
+        //console.log('match', match);
+        
+        if (!match) {
+        req.flash('error', "Username or password incorrect - try again.");
+        return res.redirect('/login');}
+
+        req.flash('info', 'successfully logged in as ' + username);
+        req.session.username = username;
+        req.session.logged_in = true;
+        //console.log('login as', username);
+        return res.redirect("/profile/" + username);
+
     } catch (error) {
       req.flash('error', `Form submission error: ${error}`);
-      return res.redirect('/login')
+      return res.redirect('/login');
     }
   });
 
+  
+//alternative route for those without passwords and those who need to update password
+
+/**
+ * Displays pasword update form so that existing users can 
+ * update password
+ */
+app.get('/password/edit/:username', (req, res) => {
+    return res.render('passwordEdit.ejs', {username:req.params.username});
+});
+
+app.post("/password/edit/:username", async (req, res) => {
+    try {
+
+        const username = req.params.username;
+        //console.log("SESSION USERNAME:", username);
+        const password = req.body.password;
+
+      const db = await Connection.open(mongoUri, WW);
+      var existingUser = await db.collection(PROFILES).findOne({username: username});
+
+      if (!existingUser) {
+        req.flash('error', "Error with username - try again.");
+        return res.redirect('/login');}
+        
+        //adding SALT to user's new password
+        const ROUNDS = 15;
+        const hash = await bcrypt.hash(password, ROUNDS);
+       
+       //set up for update
+       const filter = {username: username};
+       const updatesToAdd = {password: hash};
+       const options = {upsert: false};
+        
+        //update profile in database
+        let update = {$set: updatesToAdd};
+        await db.collection(PROFILES).updateOne(filter, update, options);
+        
+        //redirect to updated profile
+        req.flash('info',`Success! Password set as: ${hash}`);
+        return res.redirect("/profile/" + username);
+
+    } catch (error) {
+      req.flash('error', `Form submission error: ${error}`);
+      return res.redirect('/login');
+    }
+});
+
 // conventional non-Ajax logout, so redirects
 app.post('/logout/', (req, res) => {
-    console.log('in logout');
+    //console.log('in logout');
     req.session.uid = false;
     req.session.logged_in = false;
     res.redirect('/login/');
 });
+
 
 //login section end
 
@@ -251,6 +317,7 @@ app.post('/profileform', async (req, res) => {
     //get data from form
     let name = req.body.name;
     let username = req.body.username;
+    let password = req.body.password;
     let pronouns = req.body.pronouns;
     let classyear = req.body.classyear;
     let major = [];
@@ -276,12 +343,16 @@ app.post('/profileform', async (req, res) => {
     let bio = req.body.bio;
     let field = req.body.field;
     let interests = req.body.interests.split(", ");
+
+    //adding SALT to user's password
+    const ROUNDS = 15;
+    const hash = await bcrypt.hash(password, ROUNDS);
     
     //add profile to database
 
     const dbopen = await Connection.open(mongoUri, WW);
     const profiles = dbopen.collection(PROFILES);
-    await profiles.insertOne({name: name, username: username,
+    await profiles.insertOne({name: name, username: username, password:hash,
         pronouns: pronouns, classyear: classyear, major: major, minor: minor, 
         country: country, state: state, city: city, bio: bio, field: field, 
         interests: interests, friends: []});
