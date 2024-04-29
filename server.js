@@ -93,12 +93,17 @@ app.get('/login', (req, res) => {
 app.post("/login", async (req, res) => {
     try {
       const username = req.body.username;
-      const password = req.body.password;
 
       //make sure user is in the database
       const db = await Connection.open(mongoUri, WW);
       var existingUser = await db.collection(PROFILES).findOne({username: username});
 
+      if (!existingUser) {
+        req.flash('error', "Username does not exist - try again.");
+        return res.redirect('/login');}
+
+        const password = req.body.password;
+        
       //route for people with no passwords
       if(password == "" && existingUser.password){
         req.flash('error', `Please enter your password below!`);
@@ -109,10 +114,6 @@ app.post("/login", async (req, res) => {
         req.flash('error', `It seems like you need a password! Redirecting...`);
         return res.redirect("/password/edit/"+username);
       }
-
-      if (!existingUser) {
-        req.flash('error', "Username does not exist - try again.");
-        return res.redirect('/login');}
         
         //This line is making logins take forever
         const match = await bcrypt.compare(password, existingUser.password); 

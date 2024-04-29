@@ -96,6 +96,10 @@ homepage that floats next to each other */
   color: green;
 }
 
+#errors{
+  color:red;
+}
+
 /* Chat.ejs css */
 #messages {
   margin: auto;
