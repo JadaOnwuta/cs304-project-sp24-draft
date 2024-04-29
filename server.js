@@ -455,7 +455,8 @@ app.post('/profile/upload/:username/', upload.single('photo'), async (req, res) 
 
     //check that file is png or jpg/jpeg
     if (!(req.file.filename.includes('.png') || req.file.filename.includes('.jpg') 
-        || req.file.filename.includes('.jpeg'))){
+        || req.file.filename.includes('.jpeg') || req.file.filename.includes('.PNG')
+        || req.file.filename.includes('.JPG') || req.file.filename.includes('.JPEG'))){
             req.flash('error', "Please submit file in png or jpg/jpeg format");
             return res.redirect('/');
     }
