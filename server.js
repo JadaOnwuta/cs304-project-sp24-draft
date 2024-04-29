@@ -53,7 +53,7 @@ app.use(cookieSession({
 }));
 
 //configure multer for file upload
-app.use('/uploads', express.static('uploads'));
+app.use('/uploads', express.static('/students/wworld/uploads'));
 
 // ================================================================
 // custom routes here
@@ -489,7 +489,7 @@ function timeString(dateObj) {
  */
 var storage = multer.diskStorage({
     destination: function (req, file, cb) {
-      cb(null, 'uploads')
+      cb(null, '/students/wworld/uploads')
     },
     filename: function (req, file, cb) {
         let parts = file.originalname.split('.');
@@ -526,13 +526,14 @@ app.post('/profile/upload/:username/', upload.single('photo'), async (req, res) 
 
     //check that file is png or jpg/jpeg
     if (!(req.file.filename.includes('.png') || req.file.filename.includes('.jpg') 
-        || req.file.filename.includes('.jpeg'))){
+        || req.file.filename.includes('.jpeg') || req.file.filename.includes('.PNG')
+        || req.file.filename.includes('.JPG') || req.file.filename.includes('.JPEG'))){
             req.flash('error', "Please submit file in png or jpg/jpeg format");
-            return res.redirect('/');
+            return res.redirect('/profile/upload/:username');
     }
 
     //change permissions of file to be world-readable
-    let val = await fs.chmod('uploads/'+req.file.filename, 0o664);
+    let val = await fs.chmod('/students/wworld/uploads/'+req.file.filename, 0o664);
     console.log('chmod val', val);
 
     //insert file data into mongodb
@@ -605,7 +606,8 @@ app.get("/homepage/", async (req, res) => {
 
     const data = {
         friends: friendsArray,
-        newFriends: [] 
+        newFriends: [],
+        uid: uid 
     }
 
     return res.render("homepage.ejs", {data: data});
@@ -887,10 +889,11 @@ app.get('/search/', async (req, res) => {
 
 app.use((err, req, res, next) => {
     console.log('error', err);
+    let username = req.session.username;
     if(err.code === 'LIMIT_FILE_SIZE') {
         console.log('file too big')
-        req.flash('error', 'file too big')
-        res.redirect('/')
+        req.flash('error', 'File too big: please upload a file under 3 MB')
+        res.redirect('/profile/upload/:username')
     } else {
         console.error(err.stack)
         res.status(500).send('Something broke!')
