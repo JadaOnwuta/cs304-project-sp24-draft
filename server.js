@@ -535,7 +535,8 @@ app.get("/homepage/", async (req, res) => {
 
     const data = {
         friends: friendsArray,
-        newFriends: [] 
+        newFriends: [],
+        uid: uid 
     }
 
     return res.render("homepage.ejs", {data: data});

@@ -45,9 +45,12 @@
 
     <form 
     class="profile"
-    method="POST"
-    action="/logout">
-        <p><button type="logout">Logout</button></p>
+    method="GET"
+    action="/profile/<%= data.uid %>">
+        <p><button type="profile">My Profile</button></p>
     </form>
+
+    <%-include("partials/logout.ejs")%>
+
 </body>
 </html>
