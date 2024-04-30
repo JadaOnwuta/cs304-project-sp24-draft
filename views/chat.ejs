@@ -8,6 +8,7 @@
    <link rel="stylesheet" href="/styles.css" />
    <!-- loading jquery -->
    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+   <script src="/main.js"></script>
 </head>
 <body>
 
@@ -42,17 +43,21 @@
          
          <% }); %>
       </div>
+      <br>
+      
     <% } %>
+   
 
-   <script src="/main.js"></script>
+   
 <div id="textbox">
    <!-- load a dropdown form containing all incomplete values -->
    <form method="post" action="/chat/<%=friendUser%>">
-   <textarea id="chat" name="message" rows="5" cols="90"></textarea>
+      <label for="chat">Chat Input<textarea id="chat" name="message" rows="5" cols="90"></textarea></label>
    <input type="submit" value="Send">
 
    </form>
 </div>
+
 
 
 

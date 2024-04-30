@@ -2,22 +2,29 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
-    <title>Node Starter</title>
+    <title>Launch Page</title>
     <!-- load local stylesheet (css) -->
     <link rel="stylesheet" href="/styles.css" />
     <!-- loading jquery -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 </head>
-<body>
-    <h1>Welcome to WellesleyWorld! The informal Wellesley Hive.</h1>
-
-    <p>You have visited <%= visits %> times.</p>
-
-    <h2>Please sign-up or login to continue.</h2>
-
-    <p><a href="/login/">Login!</a></p>
+<body  class="gradient">
+   
+    <h1 class="launchTitle">Welcome to WellesleyWorld! The informal Wellesley Hive.</h1>
+    <div id="indexBox">
+        
     
-    <p><a href="/profileform/">Sign-up!</a></p>
+    
+    <h2>Please sign-up or login to continue.</h2>
+    <br>
+
+    <a class="launchButton" href="/login/">Login!</a>
+    
+    <a class="launchButton" href="/profileform/">Sign-up!</a>
+    
+</div>
+
+    <img class="logo" src="/logo.png" alt="The wellesleyworld logo">
 
     <!-- load local js -->
     <script src="/main.js"></script>
