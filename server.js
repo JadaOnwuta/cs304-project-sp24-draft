@@ -24,6 +24,7 @@ const constants = require('./listsOfThings.js')
 const { Connection } = require('./connection');
 const cs304 = require('./cs304');
 const { MongoDriverError } = require('mongodb');
+const { all } = require('bluebird');
 
 // Create and configure the app
 
@@ -751,17 +752,33 @@ app.post('/chat/:username', async (req, res) => {
 //search section start
 
 /**
+ * Helper function to sort by alums
+ * @param {list} allNames list of all people found with the search paramters
+ */
+function alumFinder(peopleFound) {
+    let alumsOnlyList = [];
+    peopleFound.forEach( (person) => {
+        if (Number(person.classyear) < 2024) {
+            console.log("CLASSYEAR", Number(person.classyear));
+            alumsOnlyList.push(person);
+        }
+    })
+    return alumsOnlyList;
+}
+
+/**
  * populates page with profils that match the users search criteria
  * TO-DO: search for more than one thing at a time?
  */
 app.get('/search/', async (req, res) => {
     let term = req.query.term;
     let kind = req.query.kind;
+    let alumStatus = req.query.alum;
 
     //opening connection to database
     const db = await Connection.open(mongoUri, WW);
     const profiles = db.collection(PROFILES);
-    
+
     //search routes: username/name, interests, region
     if (kind == "userName"){
 
@@ -771,6 +788,11 @@ app.get('/search/', async (req, res) => {
         //change this to $or format
         let allNames = await profiles.find({$or: [{username: {$regex: regName}}, 
             {name: {$regex: regName}}]}).toArray();
+
+        //if they want to find alums, find people with classyears > 2024
+        if (alumStatus === "alums") {
+            allNames = alumFinder(allNames);
+        }
 
         //three routes: find no one, find one person, find multiple people
         if (allNames.length == 0){
@@ -788,6 +810,10 @@ app.get('/search/', async (req, res) => {
         let regYear = new RegExp(term, 'i');
         //search for profiles with that specific interest!
         let allYears = await profiles.find({classyear: {$regex: regYear}}).toArray();
+
+        if (alumStatus === "alums") {
+            allYears = alumFinder(allYears);
+        }
 
         if (allYears.length == 0){
             req.flash('info',`Sorry, no one with the class year: ${term} was found`);
@@ -807,6 +833,10 @@ app.get('/search/', async (req, res) => {
 
         //console.log(allInterests);
 
+        if (alumStatus === "alums") {
+            allMajors = alumFinder(allMajors);
+        }
+
         if (allMajors.length == 0){
             req.flash('info',`Sorry, no one with the major: ${term} was found`);
             //would it be better to redirect or re-render here?
@@ -825,6 +855,10 @@ app.get('/search/', async (req, res) => {
 
         //console.log(allInterests);
 
+        if (alumStatus === "alums") {
+            allInterests = alumFinder(allInterests);
+        }
+
         if (allInterests.length == 0){
             req.flash('info',`Sorry, no one with the interest: ${term} was found`);
             //would it be better to redirect or re-render here?
@@ -842,6 +876,10 @@ app.get('/search/', async (req, res) => {
 
         //console.log(allInterests);
 
+        if (alumStatus === "alums") {
+            allFields = alumFinder(allFields);
+        }
+
         if (allFields.length == 0){
             req.flash('info',`Sorry, no one with the field: ${term} was found`);
             //would it be better to redirect or re-render here?
@@ -858,6 +896,10 @@ app.get('/search/', async (req, res) => {
         let allRegion = await profiles.find({$or: [{country: regRegion}, 
             {state: regRegion},{city: regRegion}]}).toArray();
         
+        if (alumStatus === "alums") {
+            allRegion = alumFinder(allRegion);
+        }
+
         if (allRegion.length == 0){
             req.flash('info',`Sorry, no one lives in: ${term}!`);
             //would it be better to redirect or re-render here?

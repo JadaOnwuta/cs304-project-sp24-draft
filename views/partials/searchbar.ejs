@@ -2,7 +2,7 @@
     <form method="GET" action="/search/">
       <p>
         <label>Search Wellesley: <input required name="term"></label>
-        <label>
+        <!-- <label>
           kind: <select required name="kind">
                   <option value="">Choose One</option>
                   <option value="userName">Name or Username</option>
@@ -12,6 +12,24 @@
                   <option value="field">Field</option>
                   <option value="region">Region</option>
         </label>
+        <label> 
+          alum status: <select required name="alum">
+                        <option value="">Alums & Students</option>
+                        <option value="alums">Alums Only</option>
+        </label> -->
+        <select required name="kind">
+          <option value="">Choose a Search Criteria</option>
+          <option value="userName">Name or Username</option>
+          <option value="classYear">Class Year</option>
+          <option value="majorOrMinor">Major or Minor</option>
+          <option value="interest">Interest</option>
+          <option value="field">Field</option>
+          <option value="region">Region</option>
+        </select>
+        <select name="alum">
+          <option value="">Alums & Students</option>
+          <option value="alums">Alums Only</option>
+        </select>
     </p>
       <p><input type="submit" value="search"></p>
   </form>
