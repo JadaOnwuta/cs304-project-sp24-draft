@@ -52,16 +52,19 @@
             <% }); %>
         </ul>
     </div>
-    <% if (data.username == currUser) {%>
+    <% if ((data.username == currUser) && (data.pendingFriends != undefined)){%>
         <div class="column">
             <p class="spacing"></p>
             <strong>
-                Added you as a friend:
+                Add Back as a Friend?:
             </strong>
             <ul>
-                <% data.friends.forEach(f =>{%>
-                    <li><%= f%></li>
+                
+                <% data.pendingFriends.forEach(f =>{%>
+                    <li><a class="regLink" href="/profile/<%=f %>" ><%= f%></a></li>
                 <% }); %>
+                
+                
             </ul>
         </div>
 

@@ -205,7 +205,16 @@ app.post('/add-friend/:uid', async (req, res) => {
     friendUid = req.params.uid;
     currUser = req.session.username;
     const db = await Connection.open(mongoUri, WW);
-    let result = db.collection(PROFILES).updateOne({username:currUser},{$push:{friends: friendUid}});
+    let result = await db.collection(PROFILES).updateOne({username:currUser},
+        {$push:{friends: friendUid}});
+
+    let ffList = await db.collection(PROFILES).findOne({username: friendUid}, 
+        {projection: {_id: 0, friends: 1}});
+    if (!ffList.friends.includes(currUser)){
+        await db.collection(PROFILES).updateOne({username: friendUid}, 
+            {$push: {pendingFriends: currUser}});
+    }
+    
     if (result.modifiedCount == 1){
         req.flash("info", "Added " + friendUid + " to friends");
     }

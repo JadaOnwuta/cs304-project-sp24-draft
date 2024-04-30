@@ -200,15 +200,30 @@ table, td{
   margin: 20px;
 }
 
-a:link{
+a:link.regLink{
  color: #003974;
+ background-color: #ffffff;
+  padding: 0px;
+  text-align: center;
+  text-decoration: underline;
+  display: inline-block;
 }
 
-a:visited{
+a:visited.regLink{
  color: #0142A4;
+ background-color: #ffffff;
+  padding: 0px;
+  text-align: center;
+  text-decoration: underline;
+  display: inline-block;
 }
-a:hover{
+a:hover.regLink{
  color: #000dff;
+ background-color: #ffffff;
+  padding: 0px;
+  text-align: center;
+  text-decoration: underline;
+  display: inline-block;
 }
 
 hr {
