@@ -18,6 +18,9 @@ const multer = require('multer');
 const fs = require('node:fs/promises');
 // our modules loaded from cwd
 
+//module with data to populate form lists
+const constants = require('./listsOfThings.js')
+
 const { Connection } = require('./connection');
 const cs304 = require('./cs304');
 const { MongoDriverError } = require('mongodb');
@@ -212,107 +215,20 @@ app.post('/add-friend/:uid', async (req, res) => {
 
 
 //profile section start
-
-//constants
-const majors = ["Africana Studies", "American Studies", "Anthropology", 
-    "Architecture", "Art History", "Astronomy", "Astrophysics", "Biochemistry",
-    "Biological Sciences", "Chemical Physics", "Chemistry",
-    "Cinema and Media Studies", "Classical Civilization", "Classics", 
-    "Cognitive and Linguistic Sciences", "Comparative Literary Studies",
-    "Computer Science", "Data Science", "East Asian Languages and Cultures",
-    "East Asian Studies", "Economics", "Education Studies", 
-    "English and Creative Writing", "Environmental Studies",
-    "French & Francophone Studies", "French Cultural Studies", "Geosciences",
-    "German Studies", "History", "International Relations - Economics", 
-    "International Relations - History", 
-    "International Relations - Political Science", "Italian Studies", 
-    "Jewish Studies", "Latin American Studies", "Mathematics", 
-    "Media Arts and Sciences", "Medieval and Renaissance Studies",
-    "Middle Eastern Studies", "Music", "Neuroscience", 
-    "Peace and Justice Studies", "Philosophy", "Physics", "Political Science",
-    "Psychology", "Religion", "Russian", "Russian Area Studies", "Sociology",
-    "South Asia Studies", "Spanish and Portuguese", "Studio Art",
-    "Theatre Studies", "Women's and Gender Studies", "Individual", "Undeclared"];
-const minors = ["Africana Studies", "Anthropology", 
-    "Art History", "Asian American Studies", "Astronomy", "Biochemistry",
-    "Biological Sciences", "Chemistry", "Chinese Language and Culture",
-    "Cinema and Media Studies", "Comparative Race and Ethnicity",
-    "Computer Science", "Economics", "Education Studies", 
-    "English and Creative Writing", "Environmental Studies", "Geosciences",
-    "German Studies", "Global Portuguese Studies", "Health and Society",
-    "History", "Italian Studies", "Japanese Language and Culture",
-    "Jewish Studies", "Korean Language and Culture", "Latin American Studies",
-    "Latina/o Studies", "Mathematics", "Medieval and Renaissance Studies",
-    "Middle Eastern Studies", "Music", "Peace and Justice Studies", 
-    "Philosophy", "Physics", "Psychology", "Religion", "Russian", "Sociology",
-    "South Asia Studies", "Statistics", "Studio Art", 
-    "Teaching and Learning Studies", "Women's and Gender Studies"];
-const countries = ["Afghanistan", "Albania", "Algeria", "Andorra",
-    "Angola", "Antigua and Barbuda", "Argentina", "Armenia", "Australia",
-    "Austria", "Azerbaijan", "The Bahamas", "Bahrain", "Bangladesh",
-    "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan",
-    "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei",
-    "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia",
-    "Cameroon", "Canada", "Central African Republic", "Chad", "Chile",
-    "China", "Colombia", "Comoros", "Congo, Democratic Republic of the",
-    "Congo, Republic of the", "Costa Rica", "Côte d’Ivoire", "Croatia",
-    "Cuba", "Cyprus", "Czech Republic", "Denmark", "Djibouti", "Dominica",
-    "Dominican Republic", "East Timor (Timor-Leste)", "Ecuador", "Egypt",
-    "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini",
-    "Ethiopia", "Fiji", "Finland", "France", "Gabon", "The Gambia",
-    "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala",
-    "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hungary",
-    "Iceland", "India", "Indonesia", "Iran", "Iraq", "Ireland", "Israel",
-    "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya",
-    "Kiribati", "Korea, North", "Korea, South", "Kosovo", "Kuwait",
-    "Kyrgyzstan", "Laos", "Latvia", "Lebanon", "Lesotho", "Liberia",
-    "Libya", "Liechtenstein", "Lithuania", "Luxembourg", "Madagascar",
-    "Malawi", "Malaysia", "Maldives", "Mali", "Malta", 
-    "Marshall Islands", "Mauritania", "Mauritius", "Mexico",
-    "Micronesia, Federated States of", "Moldova", "Monaco", "Mongolia",
-    "Montenegro", "Morocco", "Mozambique", "Myanmar (Burma)",
-    "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand",
-    "Nicaragua", "Niger", "Nigeria", "North Macedonia", "Norway",
-    "Oman", "Pakistan", "Palau", "Palestine", "Panama", 
-    "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland",
-    "Portugal", "Qatar", "Romania", "Russia", "Rwanda",
-    "Saint Kitts and Nevis", "Saint Lucia",
-    "Saint Vincent and the Grenadines", "Samoa", "San Marino",
-    "Sao Tome and Principe", "Saudi Arabia", "Senegal", "Serbia",
-    "Seychelles", "Sierra Leone", "Singapore", "Slovakia", "Slovenia",
-    "Solomon Islands", "Somalia", "South Africa", "Spain", "Sri Lanka",
-    "Sudan", "Sudan, South", "Suriname", "Sweden", "Switzerland",
-    "Syria", "Taiwan", "Tajikistan", "Tanzania", "Thailand", "Togo",
-    "Tonga", "Trinidad and Tobago", "Tunisia", "Turkey", "Turkmenistan",
-    "Tuvalu", "Uganda", "Ukraine", "United Arab Emirates", 
-    "United Kingdom", "United States", "Uruguay", "Uzbekistan",
-    "Vanuatu", "Vatican City", "Venezuela", "Vietnam", "Yemen", 
-    "Zambia", "Zimbabwe"];
-const states = ["Alabama", "Alaska", "Arizona", "Arkansas", 
-    "California", "Colorado", "Connecticut", "D.C.", "Delaware", 
-    "Florida", "Georgia", "Hawaii", "Idaho", "Illinois", "Indiana", 
-    "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", 
-    "Massachusetts", "Michigan", "Minnesota", "Mississippi", 
-    "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire",
-    "New Jersey", "New Mexico", "New York", "North Carolina", 
-    "North Dakota", "Ohio", "Oklahoma", "Oregon", "Pennsylvania",
-    "Rhode Island", "South Carolina", "South Dakota", "Tennessee",
-    "Texas", "Utah", "Vermont", "Virginia", "Washington", 
-    "West Virginia", "Wisconsin", "Wyoming"];
     
 /**
  * displays blank user profile form to be filled out
  */
 app.get('/profileform', (req, res) => {
-    return res.render('profileform.ejs', {majors: majors,
-                                        minors: minors,
-                                        countries: countries,
-                                        states: states});
+    return res.render('profileform.ejs', {majors: constants.majors,
+                                        minors: constants.minors,
+                                        countries: constants.countries,
+                                        states: constants.states});
     });
 
 
 /**
- * Route to process insertion of profile and redirect to new profile page
+ * Route to process insertion of profile and redirect to login
  */
 app.post('/profileform', async (req, res) => {
     //get data from form
@@ -353,11 +269,14 @@ app.post('/profileform', async (req, res) => {
 
     const dbopen = await Connection.open(mongoUri, WW);
     const profiles = dbopen.collection(PROFILES);
-    await profiles.insertOne({name: name, username: username, password:hash,
-        pronouns: pronouns, classyear: classyear, major: major, minor: minor, 
-        country: country, state: state, city: city, bio: bio, field: field, 
+    await profiles.insertOne({name: name, username: username, password: hash, 
+        pronouns: pronouns, classyear: classyear, major: major, minor: minor,
+        country: country, state: state, city: city, bio: bio, field: field,
         interests: interests, friends: []});
-    return res.redirect("/profile/" + username);
+
+    //log in
+    req.flash('info', 'Account created! Please login to access the website.');
+    return res.redirect("/login");
 });
 
 /**
@@ -387,10 +306,10 @@ app.get("/profile/edit/:username", async (req, res) => {
     const profileInfo = await profiles.find({username: username}).toArray();
 
     return res.render('editProfile.ejs', {data: profileInfo[0],
-                                        majors: majors,
-                                        minors: minors,
-                                        countries: countries,
-                                        states: states});
+                                        majors: constants.majors,
+                                        minors: constants.minors,
+                                        countries: constants.countries,
+                                        states: constants.states});
     });
 
 /**
