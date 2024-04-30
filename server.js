@@ -585,19 +585,25 @@ app.get("/do-select/", async (req, res) => {
  */
 app.get('/chats/', async (req, res) => {
 
-
     let uid = req.session.username || 'unknown';
     const db = await Connection.open(mongoUri, WW);
+
+    //get the current users full name
     let currName = await db.collection(PROFILES).findOne(
         {username: uid}, {projection: {name: 1, _id: 0}});
     //get all chats that the user is in
     let chats = await db.collection(CHATS).find({users: {userID: uid, 
         name: currName.name}}).toArray();
     
-    
+    //Get an array of all the users usernames
     let chatList = await getChatUsers(chats,uid);
+    //Find the profile pictures associated with those users
     let profiles = await db.collection(PROFILES).find(
-        {username: {$in: chatList}}, {projection:{_id: 0, picture: 1, username:1}}).toArray()
+        {username: {$in: chatList}}, 
+        {projection:{_id: 0, picture: 1, username:1}}).toArray()
+
+    //An object that holds just a username and the 
+    //corresponding profile picture (if there is one)
     let userDict = {};
     profiles.forEach(elt =>{
         if (elt.picture != undefined){
@@ -605,12 +611,17 @@ app.get('/chats/', async (req, res) => {
         }
     })
     
-    console.log(chatList);
-    console.log(userDict);
 
     return res.render("chatList.ejs", {chats: chats, currentUser: uid, pictures: userDict});
 });
 
+/**
+ * A helper function that gets a simple array of usernames
+ * to make looking up profiles easier
+ * @param {Array} chats - An array of chat objects 
+ * @param {String} curr - the current users uid
+ * @returns - an array of usernames of the users the current user has chatted with
+ */
 async function getChatUsers(chats,curr){
     //console.log(chats);
     chatList = [];
@@ -700,7 +711,14 @@ app.post('/chat/:username', async (req, res) => {
         {username: username}, {projection: {name: 1, _id: 0}});
     //get the current time to use as a timestamp for the message
     let time = new Date(Date.now());
-    time = time.toUTCString();
+    console.log(time);
+    time = new Intl.DateTimeFormat('en-US', {
+        dateStyle: 'medium',
+        timeStyle: 'short',
+        timeZone: 'EST',
+      }).format(time);
+    
+    //time = time.toUTCString();
     let content = req.body.message;
     //and
     await db.collection(CHATS).updateOne(

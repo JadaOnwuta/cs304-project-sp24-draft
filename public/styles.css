@@ -105,7 +105,7 @@ homepage that floats next to each other */
   margin: auto;
   max-width: 80%;
   max-height: fit-content;
-  border: 2px solid #7C8084;
+  
 }
 
 #messages::after{
