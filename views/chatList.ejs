@@ -33,7 +33,13 @@
                      <tr onClick="location.href='/chat/<%=u.userID%>';">
                         
                      <td class="chatter">
-                        <img class="profilePic" src="/person-placeholder.jpeg" alt="profile pic">
+                        <% if (Object.keys(pictures).includes(u.userID)){%>
+                           <img class="profilePic" src="<%=pictures[u.userID].filepath%>" alt="profile pic">
+
+                        <%} else {%>
+                           <img class="profilePic" src="/person-placeholder.jpeg" alt="profile pic">
+                        <%}%>
+                        
                         <span class="chatterName"><%= u.name %></span>
                         <br>
                         <% if (elt.messages[0] !== undefined) {%>

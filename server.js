@@ -592,17 +592,47 @@ app.get("/do-select/", async (req, res) => {
  * Clicking on the users name will take you to the page to chat with that user.
  */
 app.get('/chats/', async (req, res) => {
+
+
     let uid = req.session.username || 'unknown';
     const db = await Connection.open(mongoUri, WW);
     let currName = await db.collection(PROFILES).findOne(
         {username: uid}, {projection: {name: 1, _id: 0}});
-    
     //get all chats that the user is in
     let chats = await db.collection(CHATS).find({users: {userID: uid, 
         name: currName.name}}).toArray();
-    console.log(chats);
-    return res.render("chatList.ejs", {chats: chats, currentUser: uid});
+    
+    
+    let chatList = await getChatUsers(chats,uid);
+    let profiles = await db.collection(PROFILES).find(
+        {username: {$in: chatList}}, {projection:{_id: 0, picture: 1, username:1}}).toArray()
+    let userDict = {};
+    profiles.forEach(elt =>{
+        if (elt.picture != undefined){
+            userDict[elt.username] = elt.picture;
+        }
+    })
+    
+    console.log(chatList);
+    console.log(userDict);
+
+    return res.render("chatList.ejs", {chats: chats, currentUser: uid, pictures: userDict});
 });
+
+async function getChatUsers(chats,curr){
+    //console.log(chats);
+    chatList = [];
+    chats.forEach((elt) =>{
+        elt.users.forEach( user=>{
+            if (user.userID !== curr){
+                chatList.push(user.userID);
+            }
+        });
+    });
+
+    
+    return chatList;
+}
 
 /**
  * This function creates a new chat object in the chats collection
