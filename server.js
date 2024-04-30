@@ -214,7 +214,7 @@ app.post('/add-friend/:uid', async (req, res) => {
         await db.collection(PROFILES).updateOne({username: friendUid}, 
             {$push: {pendingFriends: currUser}});
     }
-    
+    await db.collection(PROFILES).updateOne({username: currUser}, {$pull: {pendingFriends: friendUid}});
     if (result.modifiedCount == 1){
         req.flash("info", "Added " + friendUid + " to friends");
     }
