@@ -9,20 +9,26 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 </head>
 <body id="gradient">
+
     <div id= "loginBox">
     <h2>Log in to Wellesley World:</h2>
-    <p>
+    
+    <div>
+        <%- include("partials/flashes.ejs") %>
       <form action="/login" method="POST">
-          <label> Wellesley Username
-              <input type="text" name="username" placeholder="ww124">
+          <p><label> Wellesley Username
+            <input type="text" name="username" placeholder="ww124" required>
+           </label>
+           </p>
+
+          <p><label> Password
+            <input type="text" name="password" placeholder="********">
           </label>
-          <!--<label> Password
-              <input type="text" name="password" placeholder="********">
-          </label>-->
+          </p>
          <p>Don't have an account? <a href="/profileform/">Sign up</a> here.</p> 
-        <button type="submit">log in</button>
+        <button type="submit" style="cursor: pointer;">log in</button>
       </form>
-    </p>
+    </div>
 </div>
 </body>
 </html>

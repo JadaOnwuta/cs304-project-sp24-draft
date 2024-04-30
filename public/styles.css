@@ -96,6 +96,10 @@ homepage that floats next to each other */
   color: green;
 }
 
+#errors{
+  color:red;
+}
+
 /* Chat.ejs css */
 #messages {
   margin: auto;
@@ -247,5 +251,22 @@ a:link, a:visited {
 }
 
 a:hover, a:active {
+  background-color: #0058db;
+}
+
+/* login button CSS */
+
+button {
+  background-color: #296dd2;
+  color: white;
+  padding: 14px 25px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  font-size: small;
+}
+
+button:hover, button:active {
   background-color: #0058db;
 }
