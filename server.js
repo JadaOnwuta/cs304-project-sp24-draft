@@ -243,6 +243,15 @@ app.post('/profileform', async (req, res) => {
     //get data from form
     let name = req.body.name;
     let username = req.body.username;
+
+    //check for duplicate usernames
+    const db = await Connection.open(mongoUri, WW);
+    var existingUser = await db.collection(PROFILES).findOne({username: username});
+    if (existingUser){
+        req.flash('error', "User with this username already exists.");
+        return res.redirect("/profileform");
+    }
+    
     let password = req.body.password;
     let pronouns = req.body.pronouns;
     let classyear = req.body.classyear;
