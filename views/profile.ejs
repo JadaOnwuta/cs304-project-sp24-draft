@@ -27,7 +27,11 @@
                             </p>
                             <strong>Major:</strong>
                             <p>
-                                <%= data.major %>
+                                <% if (data.major[1]) { %>
+                                    <%= data.major[0] %>, <%= data.major[1] %>
+                                <% } else { %>
+                                    <%= data.major %>
+                                <% } %>
                             </p>
                             <strong>Minor:</strong>
                             <p>
