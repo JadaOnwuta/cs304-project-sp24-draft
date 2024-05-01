@@ -46,7 +46,11 @@ Directions for use:
 
 13. Click on the banner again to take you back home
 
-14. Logout!
+15. Do some searches to find more friends by different categories
+
+17. Try filtering as well to see users that have things in common with you
+
+18. Logout!
 
 
 
