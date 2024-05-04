@@ -87,10 +87,12 @@
                         </strong>
                         <ul>
                         <% data.friends.forEach(fr=>{%>
-                            <li><a class="regLink" href="/profile/<%=fr %>">
-                                    <%= fr%>
-                                </a></li>
-                            <% }); %>
+                                <li>
+                                    <a class="regLink" href="/profile/<%=fr %>">
+                                        <%= fr%>
+                                    </a>
+                                </li>
+                        <% }); %>
 
                         </ul>
                         <% if ((data.pendingFriends !=undefined)){%>
@@ -133,6 +135,7 @@
                                 <% } %>
 
                                     <%-include("partials/logout.ejs")%>
+                                    <%-include("partials/deleteAccount.ejs")%>
 
                                 <% } %>
 

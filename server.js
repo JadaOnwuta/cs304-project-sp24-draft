@@ -71,6 +71,23 @@ const FILES = 'files';
 
 bcrypt = require('bcrypt');
 
+/**
+ * Helper function to check if someone is truly logged in (session obj)
+ * before executing any code that a user needs to be logged in for
+ * @param {*} req - Request Object
+ * @param {*} res - Response Object
+ * @param {*} next - Next function to be executed in the chain
+ * @returns a response object describing URL where user will be taken
+ */
+function requiresLogin(req, res, next) {
+    if (!req.session.logged_in) {
+      req.flash('error', 'This page requires you to be logged in - please do so.');
+      return res.redirect("/login/");
+    } else {
+        next();
+    }
+  }
+
 // main page. This shows the use of session cookies
 app.get('/', (req, res) => {
     let uid = req.session.uid || 'unknown';
@@ -91,8 +108,8 @@ app.get('/login', (req, res) => {
 });
 
 /**
- * Redirects existing users to profile -- includes session capabilities 
- * for further functionalities
+ * Users login with an existing username and password and
+ * are redirected to personalized profile page
  */
 app.post("/login", async (req, res) => {
     try {
@@ -146,11 +163,11 @@ app.post("/login", async (req, res) => {
  * Displays pasword update form so that existing users can 
  * update password
  */
-app.get('/password/edit/:username', (req, res) => {
+app.get('/password/edit/:username', requiresLogin, (req, res) => {
     return res.render('passwordEdit.ejs', {username:req.params.username});
 });
 
-app.post("/password/edit/:username", async (req, res) => {
+app.post("/password/edit/:username", requiresLogin, async (req, res) => {
     try {
 
         const username = req.params.username;
@@ -188,21 +205,28 @@ app.post("/password/edit/:username", async (req, res) => {
 });
 
 // conventional non-Ajax logout, so redirects
-app.post('/logout/', (req, res) => {
-    //console.log('in logout');
-    req.session.uid = false;
-    req.session.logged_in = false;
-    res.redirect('/login/');
+app.post('/logout/', requiresLogin, (req, res) => {
+    if (req.session.username) {
+        req.session.username = null;
+        req.session.logged_in = false;
+        req.flash('info', 'You are logged out');
+        return res.redirect('/login/');
+      } else {
+        req.flash('error', 'You are not logged in - please do so.');
+        return res.redirect('/login/');
+      }
 });
 
 
 //login section end
 
+//add friend section start
+
 /**
  * Adds a person to the current users friendlist when a button is clicked
  * on that persons profile page
  */
-app.post('/add-friend/:uid', async (req, res) => {
+app.post('/add-friend/:uid', requiresLogin, async (req, res) => {
     friendUid = req.params.uid;
     currUser = req.session.username;
     const db = await Connection.open(mongoUri, WW);
@@ -223,6 +247,7 @@ app.post('/add-friend/:uid', async (req, res) => {
 
 })
 
+//add friend section end
 
 //profile section start
     
@@ -301,23 +326,30 @@ app.post('/profileform', async (req, res) => {
 /**
  * Route to open a profile page
  */
-app.get("/profile/:username", async (req, res) => {
+app.get("/profile/:username", requiresLogin, async (req, res) => {
     let username = req.params.username;
     let currUser = req.session.username;
 
     const dbopen = await Connection.open(mongoUri, WW);
     const profiles = dbopen.collection(PROFILES);
     const profileInfo = await profiles.find({username: username}).toArray();
+    console.log("profile info",profileInfo);
     const myInfo = await profiles.find({username: currUser}).toArray();
-    
+
+    if (profileInfo.length == 0){
+        req.flash('info',`User not found -- try again!`)
+        return res.redirect("/profile/" + currUser);
+    }
+
     return res.render("profile.ejs", {data: profileInfo[0], currUser: currUser, 
         myData: myInfo[0]});
 });
 
+
 /**
  * Route to edit profile page
  */
-app.get("/profile/edit/:username", async (req, res) => {
+app.get("/profile/edit/:username", requiresLogin, async (req, res) => {
     let username = req.session.username;
 
     const dbopen = await Connection.open(mongoUri, WW);
@@ -334,7 +366,7 @@ app.get("/profile/edit/:username", async (req, res) => {
 /**
  * Route to update database with profile edits and display edited profile
  */
-app.post("/profile/edit/:username", async (req, res) => {
+app.post("/profile/edit/:username", requiresLogin, async (req, res) => {
     let username = req.session.username;
 
     //get document from database
@@ -450,14 +482,14 @@ var upload = multer({ storage: storage,
 /**
  * Route to upload profile picture
  */
-app.get('/profile/upload/:username/', (req, res) => {
+app.get('/profile/upload/:username/', requiresLogin, (req, res) => {
     let currUser = req.session.username;
     return res.render('fileUpload.ejs', {currUser: currUser});
 });
 /**
  * Route to upload profile picture
  */
-app.post('/profile/upload/:username/', upload.single('photo'), async (req, res) => {
+app.post('/profile/upload/:username/', requiresLogin, upload.single('photo'), async (req, res) => {
     let username = req.session.username;
 
     console.log('uploaded data', req.body);
@@ -504,7 +536,7 @@ app.post('/profile/upload/:username/', upload.single('photo'), async (req, res) 
 
 //profile section end
 
-// homepage section 
+// homepage section start
 
 /**
  * Helper function to load the three friends that the user last added  
@@ -534,7 +566,7 @@ async function homepageHelper(req, uid, profiles) {
  * (GET) Shows the homepage, where the user can see their recently-added 
  * friends and friend recommendations
  */
-app.get("/homepage/", async (req, res) => {
+app.get("/homepage/", requiresLogin, async (req, res) => {
     const db = await Connection.open(mongoUri, WW);
     const profiles = db.collection(PROFILES);
 
@@ -556,7 +588,7 @@ app.get("/homepage/", async (req, res) => {
  * (GET) Takes the menu selection and renders the homepage with the 
  * recommended friends information 
  */
-app.get("/do-select/", async (req, res) => {
+app.get("/do-select/", requiresLogin, async (req, res) => {
     const db = await Connection.open(mongoUri, WW);
     const profiles = db.collection(PROFILES);
 
@@ -602,7 +634,7 @@ app.get("/do-select/", async (req, res) => {
  * Renders a list of all other users that the current user has chatted with. 
  * Clicking on the users name will take you to the page to chat with that user.
  */
-app.get('/chats/', async (req, res) => {
+app.get('/chats/', requiresLogin, async (req, res) => {
 
     let uid = req.session.username || 'unknown';
     const db = await Connection.open(mongoUri, WW);
@@ -681,7 +713,7 @@ async function newChatObj(uid, friendUid, currUserName, friendUserName){
  *  and whichever user's uid is in the url
  * and a text input to write a chat
  */
-app.get('/chat/:username', async (req, res) => {
+app.get('/chat/:username', requiresLogin, async (req, res) => {
     const db = await Connection.open(mongoUri, WW);
     let uid = req.session.username || 'unknown';
     let receiver = req.params.username;
@@ -690,6 +722,13 @@ app.get('/chat/:username', async (req, res) => {
     let friendUserName = await db.collection(PROFILES).findOne(
         {username: receiver}, {projection: {name: 1, _id: 0}});
     console.log(currUserName.name);
+
+    //just in case someone deletes their profile!
+    if (friendUserName == null){
+        req.flash('info', `Cannot find ${receiver}!`);
+        return res.redirect("/chats/");
+    }
+    
     //find the document that contains messages between thise two users
 
     let chats = await db.collection(CHATS).find(
@@ -719,7 +758,7 @@ app.get('/chat/:username', async (req, res) => {
  * updates the chat page when a message is sent and adds the message to 
  * the corresponding chat object
  */
-app.post('/chat/:username', async (req, res) => {
+app.post('/chat/:username', requiresLogin, async (req, res) => {
     let username = req.params.username;
     let uid = req.session.username || 'unknown';
     const db = await Connection.open(mongoUri, WW);
@@ -728,6 +767,7 @@ app.post('/chat/:username', async (req, res) => {
         {username: uid}, {projection: {name: 1, _id: 0}});
     let friendUserName = await db.collection(PROFILES).findOne(
         {username: username}, {projection: {name: 1, _id: 0}});
+
     //get the current time to use as a timestamp for the message
     let time = new Date(Date.now());
     console.log(time);
@@ -770,7 +810,7 @@ function alumFinder(peopleFound) {
  * populates page with profils that match the users search criteria
  * TO-DO: search for more than one thing at a time?
  */
-app.get('/search/', async (req, res) => {
+app.get('/search/', requiresLogin, async (req, res) => {
     let term = req.query.term;
     let kind = req.query.kind;
     let alumStatus = req.query.alum;
@@ -911,6 +951,44 @@ app.get('/search/', async (req, res) => {
     }
 });
 //search section end
+
+//delete section start
+/**
+ * Displays delete page so user can confirm they want to delete account
+ */
+app.get('/delete/', requiresLogin, (req, res) => {
+    let user = req.session.username;
+    return res.render('deletePage.ejs', {username: user});
+});
+
+/**
+ * Users can delete an account with an
+ * existing username and are redirected to the login page
+ */
+app.post("/delete/:username", requiresLogin, async (req, res) => {
+    try {
+      const user = req.params.username;
+
+      //make sure user is in the database before you delete them?
+      const db = await Connection.open(mongoUri, WW);
+      var existingUser = await db.collection(PROFILES).findOne({username: user});
+      console.log(existingUser);
+
+      if (!existingUser) {
+        req.flash('error', "Username does not exist - cannot delete.");
+        return res.redirect('/delete/');}
+
+        console.log("IM ABOUT TO DELETE!!!");
+        var result = await db.collection(PROFILES).deleteOne({username: user});
+        console.log(`deleted: ${result.deleteCount} documents`);
+        return res.redirect("/");
+
+    } catch (error) {
+      req.flash('error', `Form submission error: ${error}`);
+      return res.redirect('/login');
+    }
+  });
+//delete section end
 
 // ================================================================
 // postlude

@@ -20,6 +20,7 @@
    <script src="/main.js"></script>
    <!-- load a dropdown form containing all incomplete values -->
    <h2><%= currentUser %>'s chats</h2>
+   <%- include("partials/flashes.ejs") %>
    <hr>
    <% if( (chats.length == 0)|| (chats == null) ) { %>
       <p>Looks like you haven't chatted with anyone yet. Don't be afraid to be the first to reach out!</p>

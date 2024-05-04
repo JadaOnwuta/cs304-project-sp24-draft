@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Node Starter</title>
+    <!-- load local stylesheet (css) -->
+    <link rel="stylesheet" href="/styles.css" />
+    <!-- loading jquery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+</head>
+<body class="gradient">
+
+    <div id= "loginBox">
+    <div>
+        <%- include("partials/flashes.ejs") %>
+      <form action="/delete/<%= username %>" method="POST">
+         <p><%= username %>, are you sure you want to delete your account?</p> 
+         <button type="submit" style="cursor: pointer;">Delete Account</button>
+      </form>
+    </div>
+</div>
+</body>
+</html>
