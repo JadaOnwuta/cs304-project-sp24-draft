@@ -60,9 +60,7 @@ app.use('/uploads', express.static('/students/wworld/uploads'));
 // ================================================================
 // custom routes here
 
-const DB = process.env.USER;
 const WW = "wworld";
-const STAFF = 'staff';
 const PROFILES = 'profiles';
 const CHATS = 'chats';
 const FILES = 'files';
@@ -146,7 +144,7 @@ app.post("/login", async (req, res) => {
         req.session.username = username;
         req.session.logged_in = true;
         //console.log('login as', username);
-        return res.redirect("/profile/" + username);
+        return res.redirect("/homepage");
 
     } catch (error) {
       req.flash('error', `Form submission error: ${error}`);
