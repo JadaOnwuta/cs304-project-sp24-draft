@@ -685,6 +685,7 @@ app.get("/do-select/", requiresLogin, async (req, res) => {
     } 
 
     const data = {
+        uid: uid,
         friends: friendsArray,
         newFriends: newFriendsArray
     }
