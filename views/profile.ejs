@@ -117,7 +117,11 @@
         <% } %>
         <% if (!(myData.friends.includes(data.username))) { %>
             <form method="POST" action="/add-friend/<%=data.username%>">
-                <p><button type="addFriend">Add friend</button></p>
+                <p><button type="rmFriend">Add friend</button></p>
+            </form>
+        <% } else {%>
+            <form method="POST" action="/rm-friend/<%=data.username%>">
+                <p><button type="addFriend">Remove friend</button></p>
             </form>
         <% } %>
     <% } else { %>

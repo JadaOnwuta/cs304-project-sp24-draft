@@ -220,7 +220,7 @@ app.post('/logout/', requiresLogin, (req, res) => {
 
 //login section end
 
-//add friend section start
+//add and remove friend section start
 
 /**
  * Adds a person to the current users friendlist when a button is clicked
@@ -247,7 +247,27 @@ app.post('/add-friend/:uid', requiresLogin, async (req, res) => {
 
 })
 
-//add friend section end
+/**
+ * Removes a person from the current users friendlist when a button is clicked
+ * on that persons profile page
+ */
+app.post('/rm-friend/:uid', requiresLogin, async (req, res) => {
+    friendUid = req.params.uid;
+    currUser = req.session.username;
+    const db = await Connection.open(mongoUri, WW);
+    let result = await db.collection(PROFILES).updateOne({username:currUser},
+        {$pull:{friends: friendUid}});
+    
+    await db.collection(PROFILES).updateOne({username: friendUid}, {$pull: {pendingFriends: currUser}});
+    if (result.modifiedCount == 1){
+        req.flash("info", "Removed " + friendUid + " from friends");
+    }
+    return res.redirect('/profile/'+friendUid);
+
+})
+
+
+//add and remove friend section end
 
 //profile section start
     
