@@ -121,17 +121,6 @@ app.post("/login", async (req, res) => {
 
         const password = req.body.password;
         
-      //route for people with no passwords
-      if(password == "" && existingUser.password){
-        req.flash('error', `Please enter your password below!`);
-        return res.redirect("/login");
-      }
-
-      if(password == "" && !existingUser.password){
-        req.flash('error', `It seems like you need a password! Redirecting...`);
-        return res.redirect("/password/edit/"+username);
-      }
-        
         //This line is making logins take forever
         const match = await bcrypt.compare(password, existingUser.password); 
         //console.log('match', match);
@@ -151,58 +140,6 @@ app.post("/login", async (req, res) => {
       return res.redirect('/login');
     }
   });
-
-  
-//alternative route for those without passwords and those who need to update password
-
-/**
- * Displays pasword update form so that existing users can 
- * update password
- */
-app.get('/password/edit/:username', requiresLogin, async (req, res) => {
-    return res.render('passwordEdit.ejs', {username:req.params.username});
-});
-
-/**
- * Pulls username and password information and 
- * cross-references data for existing accounts
- */
-app.post("/password/edit/:username", requiresLogin, async (req, res) => {
-    try {
-
-        const username = req.params.username;
-        //console.log("SESSION USERNAME:", username);
-        const password = req.body.password;
-
-      const db = await Connection.open(mongoUri, WW);
-      var existingUser = await db.collection(PROFILES).findOne({username: username});
-
-      if (!existingUser) {
-        req.flash('error', "Error with username - try again.");
-        return res.redirect('/login');}
-        
-        //adding SALT to user's new password
-        const ROUNDS = 15;
-        const hash = await bcrypt.hash(password, ROUNDS);
-       
-       //set up for update
-       const filter = {username: username};
-       const updatesToAdd = {password: hash};
-       const options = {upsert: false};
-        
-        //update profile in database
-        let update = {$set: updatesToAdd};
-        await db.collection(PROFILES).updateOne(filter, update, options);
-        
-        //redirect to updated profile
-        req.flash('info',`Success! Password set as: ${hash}`);
-        return res.redirect("/profile/" + username);
-
-    } catch (error) {
-      req.flash('error', `Form submission error: ${error}`);
-      return res.redirect('/login');
-    }
-});
 
 // conventional non-Ajax logout, so redirects
 app.post('/logout/', requiresLogin, async (req, res) => {
