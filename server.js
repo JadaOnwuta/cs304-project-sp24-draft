@@ -23,8 +23,6 @@ const constants = require('./listsOfThings.js')
 
 const { Connection } = require('./connection');
 const cs304 = require('./cs304');
-const { MongoDriverError } = require('mongodb');
-const { all } = require('bluebird');
 
 // Create and configure the app
 
