@@ -165,6 +165,10 @@ app.get('/password/edit/:username', requiresLogin, async (req, res) => {
     return res.render('passwordEdit.ejs', {username:req.params.username});
 });
 
+/**
+ * Pulls username and password information and 
+ * cross-references data for existing accounts
+ */
 app.post("/password/edit/:username", requiresLogin, async (req, res) => {
     try {
 
