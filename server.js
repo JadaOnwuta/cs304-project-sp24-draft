@@ -896,7 +896,7 @@ app.get('/search/', requiresLogin, async (req, res) => {
         if (allNames.length == 0){
             req.flash('info',`Sorry, no one with the user name: ${term} was found`);
             //would it be better to redirect or re-render here?
-            return res.render("searchPage.ejs",{data:allNames});
+            return res.render("searchPage.ejs",{data:allNames, currUser:currentUser});
         }
         else{
             return res.render("searchPage.ejs",{data:allNames, currUser:currentUser});
@@ -916,10 +916,10 @@ app.get('/search/', requiresLogin, async (req, res) => {
         if (allYears.length == 0){
             req.flash('info',`Sorry, no one with the class year: ${term} was found`);
             //would it be better to redirect or re-render here?
-            return res.render("searchPage.ejs",{data:allYears});
+            return res.render("searchPage.ejs",{data:allYears, currUser:currentUser});
         }
         else{
-            return res.render("searchPage.ejs",{data:allYears});
+            return res.render("searchPage.ejs",{data:allYears, currUser:currentUser});
         }
     }else if (kind == "majorOrMinor"){
 
@@ -938,10 +938,10 @@ app.get('/search/', requiresLogin, async (req, res) => {
         if (allMajors.length == 0){
             req.flash('info',`Sorry, no one with the major: ${term} was found`);
             //would it be better to redirect or re-render here?
-            return res.render("searchPage.ejs",{data:allMajors});
+            return res.render("searchPage.ejs",{data:allMajors, currUser:currentUser});
         }
         else{
-            return res.render("searchPage.ejs",{data:allMajors});
+            return res.render("searchPage.ejs",{data:allMajors, currUser:currentUser});
         }
     }else if (kind == "interest"){
 
@@ -960,10 +960,10 @@ app.get('/search/', requiresLogin, async (req, res) => {
         if (allInterests.length == 0){
             req.flash('info',`Sorry, no one with the interest: ${term} was found`);
             //would it be better to redirect or re-render here?
-            return res.render("searchPage.ejs",{data:allInterests});
+            return res.render("searchPage.ejs",{data:allInterests, currUser:currentUser});
         }
         else{
-            return res.render("searchPage.ejs",{data:allInterests});
+            return res.render("searchPage.ejs",{data:allInterests, currUser:currentUser});
         }
     }else if (kind == "field"){
 
@@ -981,10 +981,10 @@ app.get('/search/', requiresLogin, async (req, res) => {
         if (allFields.length == 0){
             req.flash('info',`Sorry, no one with the field: ${term} was found`);
             //would it be better to redirect or re-render here?
-            return res.render("searchPage.ejs",{data:allFields});
+            return res.render("searchPage.ejs",{data:allFields, currUser:currentUser});
         }
         else{
-            return res.render("searchPage.ejs",{data:allFields});
+            return res.render("searchPage.ejs",{data:allFields, currUser:currentUser});
         }
     }else{
         
@@ -1001,10 +1001,10 @@ app.get('/search/', requiresLogin, async (req, res) => {
         if (allRegion.length == 0){
             req.flash('info',`Sorry, no one lives in: ${term}!`);
             //would it be better to redirect or re-render here?
-            return res.render("searchPage.ejs",{data:allRegion});
+            return res.render("searchPage.ejs",{data:allRegion, currUser:currentUser});
         }
         else{
-            return res.render("searchPage.ejs",{data:allRegion});
+            return res.render("searchPage.ejs",{data:allRegion, currUser:currentUser});
         }
     }
 });
