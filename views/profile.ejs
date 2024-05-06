@@ -110,6 +110,7 @@
     <% } %>
     </div>
 
+    <hr>
     <% if (data.username !=currUser){ %>
         <a href="/chat/<%= data.username %>">Chat with <%= data.name %>!</a>
         <% if (data.LinkedIn){ %>
@@ -125,15 +126,17 @@
             </form>
         <% } %>
     <% } else { %>
+        
         <% if (!data.LinkedIn){ %>
             <a href="/profile/connectLinkedIn/<%= data.username %>">Connect your LinkedIn!</a>
         <% } else { %>
             <p><a href="<%= data.LinkedIn %>">My LinkedIn</a></p>
         <% } %>
+
         <% if (!data.picture){ %>
             <a href="/profile/upload/<%= data.username %>">Add a profile picture!</a>
         <% } %>
-        <a href="/profile/edit/<%= data.username %>">Edit profile!</a>
+            <a href="/profile/edit/<%= data.username %>">Edit profile!</a>
             <%-include("partials/logout.ejs")%>
             <%-include("partials/deleteAccount.ejs")%>
         <% } %>
