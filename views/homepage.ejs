@@ -9,7 +9,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 </head>
 <body>
-    <%- include("partials/banner.ejs") %>
+    <%- include("partials/banner.ejs", {user: data.uid}) %>
     <%- include("partials/flashes.ejs") %>
     <%- include("partials/searchbar.ejs") %>
 
@@ -43,12 +43,12 @@
         <% }); %>
     </div> 
 
-    <form 
+   <!--  <form 
     class="profile"
     method="GET"
     action="/profile/<%= data.uid %>">
         <p><button type="profile">My Profile</button></p>
-    </form>
+    </form> -->
 
     <%-include("partials/logout.ejs")%>
 
