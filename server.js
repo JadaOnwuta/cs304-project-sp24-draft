@@ -661,12 +661,8 @@ app.get("/do-select/", requiresLogin, async (req, res) => {
 
     // if someone only put in their country and not their state, 
     // then find friends by country instead
-    console.log("attribute1: ", attribute);
-    console.log((attribute === "location") && (personObject[attribute] === ''));
-
     if ((attribute === "state") && (personObject[attribute] === '')) {
         attribute = "country";
-        console.log("here");
     }
 
     let newFriendsArray = await profiles.find({$and: [
