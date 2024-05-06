@@ -350,3 +350,24 @@ button:hover, button:active {
   background-color: #0058db;
 }
 
+button[type = logout], button[type = addFriend], button[type=rmFriend]{
+  padding: 12px 20px;
+  background-color: #ffffff;
+  color: #0058db;
+  border: 2px solid #0058db;
+  border-radius: 15px;
+  font-size: 14px;
+}
+
+button[type = logout]:hover, button[type = logout]:active, button[type=rmFriend]:hover {
+  
+  color: #ff0000;
+  border: 2px solid #ff0000;
+  
+}
+
+button[type = addFriend]:hover{
+  background-color: #0058db;
+  color:#ffffff;
+}
+

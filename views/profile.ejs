@@ -109,24 +109,26 @@
         </div>
     <% } %>
     </div>
-
-    <hr>
+    <br>
+    
     <% if (data.username !=currUser){ %>
+        
         <a href="/chat/<%= data.username %>">Chat with <%= data.name %>!</a>
         <% if (data.LinkedIn){ %>
             <a href="<%= data.LinkedIn %>">Connect with <%= data.name %> on LinkedIn!</a>
         <% } %>
+        <hr>
         <% if (!(myData.friends.includes(data.username))) { %>
             <form method="POST" action="/add-friend/<%=data.username%>">
-                <p><button type="rmFriend">Add friend</button></p>
+                <p><button type="addFriend">Add friend</button></p>
             </form>
         <% } else {%>
             <form method="POST" action="/rm-friend/<%=data.username%>">
-                <p><button type="addFriend">Remove friend</button></p>
+                <p><button type="rmFriend">Remove friend</button></p>
             </form>
         <% } %>
     <% } else { %>
-        
+
         <% if (!data.LinkedIn){ %>
             <a href="/profile/connectLinkedIn/<%= data.username %>">Connect your LinkedIn!</a>
         <% } else { %>
@@ -137,8 +139,12 @@
             <a href="/profile/upload/<%= data.username %>">Add a profile picture!</a>
         <% } %>
             <a href="/profile/edit/<%= data.username %>">Edit profile!</a>
-            <%-include("partials/logout.ejs")%>
-            <%-include("partials/deleteAccount.ejs")%>
+
+            <hr>
+            
+                <%-include("partials/logout.ejs")%>
+                <%-include("partials/deleteAccount.ejs")%>
+               
         <% } %>
 </body>
 </html>
