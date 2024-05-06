@@ -77,7 +77,7 @@ bcrypt = require('bcrypt');
  * @param {*} next - Next function to be executed in the chain
  * @returns a response object describing URL where user will be taken
  */
-function requiresLogin(req, res, next) {
+async function requiresLogin(req, res, next) {
     if (!req.session.logged_in) {
       req.flash('error', 'This page requires you to be logged in - please do so.');
       return res.redirect("/login/");
@@ -161,7 +161,7 @@ app.post("/login", async (req, res) => {
  * Displays pasword update form so that existing users can 
  * update password
  */
-app.get('/password/edit/:username', requiresLogin, (req, res) => {
+app.get('/password/edit/:username', requiresLogin, async (req, res) => {
     return res.render('passwordEdit.ejs', {username:req.params.username});
 });
 
@@ -203,7 +203,7 @@ app.post("/password/edit/:username", requiresLogin, async (req, res) => {
 });
 
 // conventional non-Ajax logout, so redirects
-app.post('/logout/', requiresLogin, (req, res) => {
+app.post('/logout/', requiresLogin, async (req, res) => {
     if (req.session.username) {
         req.session.username = null;
         req.session.logged_in = false;
@@ -458,7 +458,7 @@ app.post("/profile/edit/:username", requiresLogin, async (req, res) => {
 /**
  * Route for user to add a link to their LinkedIn profile
  */
-app.get("/profile/connectLinkedIn/:currUser", requiresLogin, (req, res) => {
+app.get("/profile/connectLinkedIn/:currUser", requiresLogin, async (req, res) => {
     let currUser = req.session.username;
     return res.render('connectLinkedIn.ejs', {currUser: currUser});
 });
@@ -498,7 +498,7 @@ app.post("/profile/connectLinkedIn/:currUser", requiresLogin, async (req, res) =
 for 56 seconds past 12:34. If the argument is omitted, the current
 time is used.
 */
-function timeString(dateObj) {
+async function timeString(dateObj) {
     if( !dateObj) {
         dateObj = new Date();
     }
@@ -517,10 +517,10 @@ var storage = multer.diskStorage({
     destination: function (req, file, cb) {
       cb(null, '/students/wworld/uploads')
     },
-    filename: function (req, file, cb) {
+    filename: async function (req, file, cb) {
         let parts = file.originalname.split('.');
         let ext = parts[parts.length-1];
-        let hhmmss = timeString();
+        let hhmmss = await timeString();
         cb(null, file.fieldname + '-' + hhmmss + '.' + ext);
     }
 })
@@ -537,7 +537,7 @@ var upload = multer({ storage: storage,
 /**
  * Route to upload profile picture
  */
-app.get('/profile/upload/:username/', requiresLogin, (req, res) => {
+app.get('/profile/upload/:username/', requiresLogin, async (req, res) => {
     let currUser = req.session.username;
     return res.render('fileUpload.ejs', {currUser: currUser});
 });
@@ -657,19 +657,29 @@ app.get("/do-select/", requiresLogin, async (req, res) => {
     if (attribute === "location") {
         attribute = "state";
     }
-    const personAttr = personObject[attribute]; // find the user's attribute (currently, hardcoding field)
+    let personAttr = personObject[attribute]; // find the user's attribute (currently, hardcoding field)
 
     // if someone only put in their country and not their state, 
     // then find friends by country instead
     if ((attribute === "state") && (personObject[attribute] === '')) {
         attribute = "country";
+        personAttr = personObject[attribute];
     }
 
-    let newFriendsArray = await profiles.find({$and: [
-        {[attribute]: {$eq: personAttr}},     // find people with the same attribute
-        {username: {$nin: personObject.friends}},     // filter out old friends
-        {username: {$ne: personObject.username}}     // filter out the user themselves
-    ]}).toArray();
+    let newFriendsArray;
+    if (attribute === "interests") {
+        newFriendsArray = await profiles.find({$and: [
+            {interests: {$in: personAttr}},     // find people with the same interests
+            {username: {$nin: personObject.friends}},     // filter out old friends
+            {username: {$ne: personObject.username}}     // filter out the user themselves
+        ]}).toArray();
+    } else {
+        newFriendsArray = await profiles.find({$and: [
+            {[attribute]: {$eq: personAttr}},     // find people with the same attribute
+            {username: {$nin: personObject.friends}},     // filter out old friends
+            {username: {$ne: personObject.username}}     // filter out the user themselves
+        ]}).toArray();
+    }
 
     console.log("attribute: ", attribute);
     console.log("personAttr: ", personAttr);
@@ -857,7 +867,7 @@ app.post('/chat/:username', requiresLogin, async (req, res) => {
  * Helper function to sort by alums
  * @param {list} allNames list of all people found with the search paramters
  */
-function alumFinder(peopleFound) {
+async function alumFinder(peopleFound) {
     let alumsOnlyList = [];
     peopleFound.forEach( (person) => {
         if (Number(person.classyear) < 2024) {
@@ -894,7 +904,7 @@ app.get('/search/', requiresLogin, async (req, res) => {
 
         //if they want to find alums, find people with classyears > 2024
         if (alumStatus === "alums") {
-            allNames = alumFinder(allNames);
+            allNames = await alumFinder(allNames);
         }
 
         //three routes: find no one, find one person, find multiple people
@@ -915,7 +925,7 @@ app.get('/search/', requiresLogin, async (req, res) => {
         let allYears = await profiles.find({classyear: {$regex: regYear}}).toArray();
 
         if (alumStatus === "alums") {
-            allYears = alumFinder(allYears);
+            allYears = await alumFinder(allYears);
         }
 
         if (allYears.length == 0){
@@ -937,7 +947,7 @@ app.get('/search/', requiresLogin, async (req, res) => {
         //console.log(allInterests);
 
         if (alumStatus === "alums") {
-            allMajors = alumFinder(allMajors);
+            allMajors = await alumFinder(allMajors);
         }
 
         if (allMajors.length == 0){
@@ -959,7 +969,7 @@ app.get('/search/', requiresLogin, async (req, res) => {
         //console.log(allInterests);
 
         if (alumStatus === "alums") {
-            allInterests = alumFinder(allInterests);
+            allInterests = await alumFinder(allInterests);
         }
 
         if (allInterests.length == 0){
@@ -980,7 +990,7 @@ app.get('/search/', requiresLogin, async (req, res) => {
         //console.log(allInterests);
 
         if (alumStatus === "alums") {
-            allFields = alumFinder(allFields);
+            allFields = await alumFinder(allFields);
         }
 
         if (allFields.length == 0){
@@ -1000,7 +1010,7 @@ app.get('/search/', requiresLogin, async (req, res) => {
             {state: regRegion},{city: regRegion}]}).toArray();
         
         if (alumStatus === "alums") {
-            allRegion = alumFinder(allRegion);
+            allRegion = await alumFinder(allRegion);
         }
 
         if (allRegion.length == 0){
@@ -1019,7 +1029,7 @@ app.get('/search/', requiresLogin, async (req, res) => {
 /**
  * Displays delete page so user can confirm they want to delete account
  */
-app.get('/delete/', requiresLogin, (req, res) => {
+app.get('/delete/', requiresLogin, async (req, res) => {
     let user = req.session.username;
     return res.render('deletePage.ejs', {username: user});
 });
