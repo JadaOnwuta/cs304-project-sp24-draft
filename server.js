@@ -658,14 +658,25 @@ app.get("/do-select/", requiresLogin, async (req, res) => {
         attribute = "state";
     }
     const personAttr = personObject[attribute]; // find the user's attribute (currently, hardcoding field)
+
+    // if someone only put in their country and not their state, 
+    // then find friends by country instead
+    console.log("attribute1: ", attribute);
+    console.log((attribute === "location") && (personObject[attribute] === ''));
+
+    if ((attribute === "state") && (personObject[attribute] === '')) {
+        attribute = "country";
+        console.log("here");
+    }
+
     let newFriendsArray = await profiles.find({$and: [
         {[attribute]: {$eq: personAttr}},     // find people with the same attribute
-        {friends: {$ne: personObject.username}},     // filter out old friends
+        {username: {$nin: personObject.friends}},     // filter out old friends
         {username: {$ne: personObject.username}}     // filter out the user themselves
     ]}).toArray();
 
-    // console.log("attribute: ", attribute);
-    // console.log("personAttr: ", personAttr);
+    console.log("attribute: ", attribute);
+    console.log("personAttr: ", personAttr);
     // console.log(newFriendsArray);
 
     if (newFriendsArray.length === 0) {
