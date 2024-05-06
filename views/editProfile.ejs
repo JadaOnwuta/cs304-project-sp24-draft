@@ -24,6 +24,12 @@
         <p><a href="/profile/upload/<%= data.username %>">Add a profile picture!</a></p>
       <% } %>
 
+      <% if (data.LinkedIn){ %>
+        <p><a href="/profile/connectLinkedIn/<%= data.username %>">Update your LinkedIn link!</a></p>
+    <% } else { %>
+        <p><a href="/profile/connectLinkedIn/<%= data.username %>">Connect your LinkedIn!</a></p>
+    <% } %>
+
       <p><label>Name*: <input name="name" value="<%= data.name %>" required></label></p>
 
       <p><label>Wellesley Username*: <%= data.username %></label></p>
@@ -122,9 +128,9 @@
         <p>
             <textarea rows="3" cols="30" name="interests" id="interests" class="box"><%= data.interests.join(", ") %></textarea>
         </p>
-        </div>
         <p><button type="submit">Submit</button></p>
     </form>
+  </div>
   </div>
 </body>
 </html>

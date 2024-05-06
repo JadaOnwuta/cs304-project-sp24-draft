@@ -12,21 +12,18 @@
     <%- include("partials/banner.ejs") %>
     <%-include("partials/flashes.ejs")%>
     
-<h2>Upload a profile picture!</h2>
-<form action="/profile/upload/<%= currUser %>/" method="POST" enctype="multipart/form-data">
+<h2>Connect your LinkedIn!</h2>
+<form action="/profile/connectLinkedIn/<%= currUser %>/" method="POST">
    <p>
-        <label>File:
-            <input type="file" accept="image/*" name="photo" required>
+        <label for="link">
+            Please copy & paste the link to your LinkedIn profile here. <br>
+            Note that LinkedIn has a "Public profile & URL" section included
+            on your profile; you can use this link or the URL from your browser.
+            <input type="text" name="link">
         </label>
     </p>
     <p>
-        <label for="alt">Alt text:
-            <input type="text" name="alt" placeholder="description of photo" required>
-        </label>
-    </p>
-    <p>
-        <input type="submit" value="Submit Uploads">
-        <input type="reset" value="Reset">
+        <input type="submit" value="Submit">
     </p>
 </form>
 </body>

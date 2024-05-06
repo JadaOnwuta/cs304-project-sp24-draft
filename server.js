@@ -410,7 +410,7 @@ app.post("/profile/edit/:username", requiresLogin, async (req, res) => {
 
     //check form data against document from database
     let originalProfile = [data.name, data.pronouns, data.classyear, data.major, data.minor, 
-                data.country, data.state, data.city, data.bio, data.field, data.interests];
+            data.country, data.state, data.city, data.bio, data.field, data.interests];
     let editedProfile = [editName, editPronouns, editClassyear, editMajor, editMinor,
                 editCountry, editState, editCity, editBio, editField, editInterests];
     let profileKeys = ["name", "pronouns", "classyear", "major", "minor", "country",
@@ -434,6 +434,43 @@ app.post("/profile/edit/:username", requiresLogin, async (req, res) => {
     await profiles.updateOne(filter, update, options);
 
     //redirect to updated profile
+    return res.redirect("/profile/" + username);
+});
+
+/**
+ * Route for user to add a link to their LinkedIn profile
+ */
+app.get("/profile/connectLinkedIn/:currUser", (req, res) => {
+    let currUser = req.session.username;
+    return res.render('connectLinkedIn.ejs', {currUser: currUser});
+});
+
+/**
+ * Route to update profile with link to LinkedIn added
+ */
+app.post("/profile/connectLinkedIn/:currUser", async (req, res) => {
+    let username = req.params.currUser;
+
+    //get info from form & format
+    let LinkedIn = req.body.link;
+    if (!(LinkedIn.startsWith("https"))){
+        let URLstart = "https://";
+        LinkedIn = URLstart.concat(LinkedIn);
+    }
+
+    //open database
+    const dbopen = await Connection.open(mongoUri, WW);
+    const profiles = dbopen.collection(PROFILES);
+
+    //set up for update
+    const filter = {username: username};
+    let update = {$set: {LinkedIn: LinkedIn}};
+    const options = {upsert: false};
+    
+    //update
+    await profiles.updateOne(filter, update, options);
+
+    //return to profile
     return res.redirect("/profile/" + username);
 });
 

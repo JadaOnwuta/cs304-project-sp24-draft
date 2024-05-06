@@ -14,131 +14,124 @@
     <%- include("partials/banner.ejs") %>
     <%-include("partials/flashes.ejs")%>
 
-            <div class="row" id="profile">
-                <div class="column">
-                    <% if (data.picture){ %>
-                        <br>
-                        <img class="profilepic" src="<%= data.picture.filepath %>" alt="<%= data.picture.alt %>">
-                        <% } %>
-                            <h2>
-                                <%= data.name %>
-                            </h2>
-                            <p>Class of <%= data.classyear %> | <%= data.pronouns %>
-                            </p>
-                            <strong>Major:</strong>
-                            <p>
-                                <% if (data.major[1]) { %>
-                                    <%= data.major[0] %>, <%= data.major[1] %>
-                                <% } else { %>
-                                    <%= data.major %>
-                                <% } %>
-                            </p>
-                            <strong>Minor:</strong>
-                            <p>
-                                <%= data.minor %>
-                            </p>
-                            <strong>Region:</strong>
-                            <% if (data.city=="" ){ %>
-                                <% if (data.state=="" ){ %>
-                                    <p>
-                                        <%= data.country %>
-                                    </p>
-                                    <% } else{ %>
-                                        <p>
-                                            <%= data.state %>, <%= data.country %>
-                                        </p>
-                                        <% } %>
-                                            <% } else{ %>
-                                                <% if (data.state=="" ){ %>
-                                                    <p>
-                                                        <%= data.city %>, <%= data.country %>
-                                                    </p>
-                                                    <% } else{ %>
-                                                        <p>
-                                                            <%= data.city %>, <%= data.state %>, <%= data.country %>
-                                                        </p>
-                                                        <% } %>
-                                                            <% } %>
-                </div>
-                <div class="column">
-                    <p class="spacing"></p>
-                    <strong>Bio:</strong>
-                    <p>
-                        <%= data.bio %>
-                    </p>
-                    <strong>Field:</strong>
-                    <p>
-                        <%= data.field %>
-                    </p>
-                    <strong>Interests:</strong>
-                    <ul>
-                        <% data.interests.forEach( elt=> { %>
-                            <li>
-                                <%= elt %>
-                            </li>
-                            <% }); %>
-                    </ul>
-                </div>
-                <% if ((data.username==currUser)){%>
-                    <div class="column">
-                        <p class="spacing"></p>
-                        <strong>
-                            All Friends:
-                        </strong>
-                        <ul>
-                        <% data.friends.forEach(fr=>{%>
-                                <li>
-                                    <a class="regLink" href="/profile/<%=fr %>">
-                                        <%= fr%>
-                                    </a>
-                                </li>
-                        <% }); %>
+    <div class="row" id="profile">
+    <div class="column">
+    
+    <% if (data.picture){ %>
+        <br>
+        <img class="profilepic" src="<%= data.picture.filepath %>" alt="<%= data.picture.alt %>">
+    <% } %>
+    <h2><%= data.name %></h2>
+    <p>Class of <%= data.classyear %> | <%= data.pronouns %></p>
+    <strong>Major:</strong>
+    <p>
+    <% if (data.major[1]) { %>
+        <%= data.major[0] %>, <%= data.major[1] %>
+    <% } else { %>
+        <%= data.major %>
+    <% } %>
+    </p>
+    <strong>Minor:</strong>
+    <p>
+        <%= data.minor %>
+    </p>
+    <strong>Region:</strong>
+    <% if (data.city=="" ){ %>
+        <% if (data.state=="" ){ %>
+            <p>
+                <%= data.country %>
+            </p>
+        <% } else{ %>
+            <p>
+                <%= data.state %>, <%= data.country %>
+            </p>
+        <% } %>
+        <% } else{ %>
+            <% if (data.state=="" ){ %>
+                <p>
+                    <%= data.city %>, <%= data.country %>
+                </p>
+            <% } else{ %>
+                <p>
+                    <%= data.city %>, <%= data.state %>, <%= data.country %>
+                </p>
+            <% } %>
+        <% } %>
+    </div>
+    <div class="column">
+    <p class="spacing"></p>
+    <strong>Bio:</strong>
+    <p>
+        <%= data.bio %>
+    </p>
+    <strong>Field:</strong>
+    <p>
+        <%= data.field %>
+    </p>
+    <strong>Interests:</strong>
+    <ul>
+        <% data.interests.forEach( elt=> { %>
+            <li>
+                <%= elt %>
+            </li>
+        <% }); %>
+    </ul>
+    </div>
 
-                        </ul>
-                        <% if ((data.pendingFriends !=undefined)){%>
-                                <strong>
-                                    Add Back as a Friend?:
-                                </strong>
-                                <ul>
+    <% if ((data.username==currUser)){%>
+        <div class="column">
+        <p class="spacing"></p>
+        <strong>
+            All Friends:
+        </strong>
+        <ul>
+            <% data.friends.forEach(fr=>{%>
+                <li>
+                    <a class="regLink" href="/profile/<%=fr %>">
+                        <%= fr%>
+                    </a>
+                </li>
+            <% }); %>
 
-                                    <% data.pendingFriends.forEach(f=>{%>
-                                        <li><a class="regLink" href="/profile/<%=f %>">
-                                                <%= f%>
-                                            </a></li>
-                                        <% }); %>
+        </ul>
+        <% if ((data.pendingFriends !=undefined)){%>
+            <strong>
+                Add Back as a Friend?:
+            </strong>
+            <ul>
+                <% data.pendingFriends.forEach(f=>{%>
+                        <li><a class="regLink" href="/profile/<%=f %>">
+                            <%= f%>
+                        </a></li>
+                <% }); %>
+            </ul>
+        <% } %>
+        </div>
+    <% } %>
+    </div>
 
-
-                                </ul>
-                        <% } %>
-                    </div>
-
-                    <% } %>
-
-            </div>
-
-
-            <% if (data.username !=currUser){ %>
-                <p><a href="/chat/<%= data.username %>">Chat with <%= data.name %>!</a></p>
-
-                <% } %>
-
-                    <% if ((data.username !=currUser) && !(myData.friends.includes(data.username))){ %>
-                        <form method="POST" action="/add-friend/<%=data.username%>">
-                            <p><button type="addFriend">Add friend</button></p>
-                        </form>
-                        <% } %>
-
-                            <% if (data.username==currUser){ %>
-                                <p><a href="/profile/edit/<%= data.username %>">Edit profile!</a></p>
-                                <% if (!data.picture){ %>
-                                    <p><a href="/profile/upload/<%= data.username %>">Add a profile picture!</a></p>
-                                <% } %>
-
-                                    <%-include("partials/logout.ejs")%>
-                                    <%-include("partials/deleteAccount.ejs")%>
-
-                                <% } %>
-
+    <% if (data.username !=currUser){ %>
+        <a href="/chat/<%= data.username %>">Chat with <%= data.name %>!</a>
+        <% if (data.LinkedIn){ %>
+            <a href="<%= data.LinkedIn %>">Connect with <%= data.name %> on LinkedIn!</a>
+        <% } %>
+        <% if (!(myData.friends.includes(data.username))) { %>
+            <form method="POST" action="/add-friend/<%=data.username%>">
+                <p><button type="addFriend">Add friend</button></p>
+            </form>
+        <% } %>
+    <% } else { %>
+        <% if (!data.LinkedIn){ %>
+            <a href="/profile/connectLinkedIn/<%= data.username %>">Connect your LinkedIn!</a>
+        <% } else { %>
+            <p><a href="<%= data.LinkedIn %>">My LinkedIn</a></p>
+        <% } %>
+        <% if (!data.picture){ %>
+            <a href="/profile/upload/<%= data.username %>">Add a profile picture!</a>
+        <% } %>
+        <a href="/profile/edit/<%= data.username %>">Edit profile!</a>
+            <%-include("partials/logout.ejs")%>
+            <%-include("partials/deleteAccount.ejs")%>
+        <% } %>
 </body>
-
 </html>
