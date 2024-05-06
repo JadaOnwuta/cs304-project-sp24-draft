@@ -460,7 +460,7 @@ app.post("/profile/edit/:username", requiresLogin, async (req, res) => {
 /**
  * Route for user to add a link to their LinkedIn profile
  */
-app.get("/profile/connectLinkedIn/:currUser", (req, res) => {
+app.get("/profile/connectLinkedIn/:currUser", requiresLogin, (req, res) => {
     let currUser = req.session.username;
     return res.render('connectLinkedIn.ejs', {currUser: currUser});
 });
@@ -468,7 +468,7 @@ app.get("/profile/connectLinkedIn/:currUser", (req, res) => {
 /**
  * Route to update profile with link to LinkedIn added
  */
-app.post("/profile/connectLinkedIn/:currUser", async (req, res) => {
+app.post("/profile/connectLinkedIn/:currUser", requiresLogin, async (req, res) => {
     let username = req.params.currUser;
 
     //get info from form & format
