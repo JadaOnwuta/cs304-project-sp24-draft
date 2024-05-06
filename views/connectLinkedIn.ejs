@@ -13,14 +13,13 @@
     <%-include("partials/flashes.ejs")%>
     
 <h2>Connect your LinkedIn!</h2>
+
+<p>Please copy & paste the link to your LinkedIn profile here. <br>
+    Note that LinkedIn has a "Public profile & URL" section included
+    on your profile; you can use this link or the URL from your browser.</p>
 <form action="/profile/connectLinkedIn/<%= currUser %>/" method="POST">
    <p>
-        <label for="link">
-            Please copy & paste the link to your LinkedIn profile here. <br>
-            Note that LinkedIn has a "Public profile & URL" section included
-            on your profile; you can use this link or the URL from your browser.
-            <input type="text" name="link">
-        </label>
+        <label>Link: <input type="text" name="link"></label>
     </p>
     <p>
         <input type="submit" value="Submit">

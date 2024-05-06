@@ -1,6 +1,7 @@
-h1 {
+h1#banner-header {
   color: #0C2142;
   padding-left: 10px;
+  font-family: 'Times New Roman', Times, serif;
 }
 
 h1.launchTitle {
@@ -14,6 +15,7 @@ h1.launchTitle {
 h2 {
   color: #0142A4;
   padding-left: 10px;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
 
 .profileform {
@@ -24,6 +26,10 @@ h2 {
 
 .box{
   border-radius: 10px;
+}
+
+p, a, h1, h3, li, label{
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
 
 @media screen and (max-width: 600px) {
@@ -187,6 +193,7 @@ homepage that floats next to each other */
   max-width: fit-content;
   margin:auto;
   clear:both;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
 
 textarea {
@@ -198,6 +205,7 @@ textarea {
   border-radius: 4px;
   background-color: #f8f8f8;
   resize: none;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
 
 input[type=submit]{
