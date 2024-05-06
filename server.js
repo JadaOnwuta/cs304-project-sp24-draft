@@ -871,6 +871,7 @@ app.get('/search/', requiresLogin, async (req, res) => {
     let term = req.query.term;
     let kind = req.query.kind;
     let alumStatus = req.query.alum;
+    let currentUser = req.session.username;
 
     //opening connection to database
     const db = await Connection.open(mongoUri, WW);
@@ -898,7 +899,7 @@ app.get('/search/', requiresLogin, async (req, res) => {
             return res.render("searchPage.ejs",{data:allNames});
         }
         else{
-            return res.render("searchPage.ejs",{data:allNames});
+            return res.render("searchPage.ejs",{data:allNames, currUser:currentUser});
         }
     }
     //lets check class years here -- might make it a click thing later on?
