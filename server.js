@@ -993,7 +993,14 @@ app.post("/delete/:username", requiresLogin, async (req, res) => {
 
         console.log("IM ABOUT TO DELETE!!!");
         var result = await db.collection(PROFILES).deleteOne({username: user});
+        //for profile in profiles: if user in friends: update profile by pulling that username
+        //if in pendingfriends: do same
+        
+        var chatResult = await db.collection(CHATS).deleteMany({'users.userID': {$eq: user}});
+        var allProfiles = await db.collection(PROFILES).updateMany({}, {$pull: {friends: user, pendingFriends:user}});
         console.log(`deleted: ${result.deleteCount} documents`);
+        console.log(`deleted: ${chatResult.deleteCount} chat documents`);
+        console.log(`removed: ${allProfiles.modifiedCount} items`);
         return res.redirect("/");
 
     } catch (error) {
