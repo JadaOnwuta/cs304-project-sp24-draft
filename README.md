@@ -14,21 +14,21 @@ New Features:
 3. You can delete your profile!
 
 
-Link to Video Demo: 
+Link to Video Demo: https://drive.google.com/file/d/1pBqwfdcnsnthJbA5s-hCaqIUZ3mxEcjf/view?usp=drive_link
 
 Directions for use:
 
 1. Click on the login button.
 
-2. If you have an account, login. If you do not have an account, click sign-up and make an account. Login. You will be redirected to your profile page.
+2. If you have an account, login. If you do not have an account, click sign-up and make an account. Login. You will be redirected to the home page.
 
-3. Welcome to your profile page! You should be able to see all the user’s information. 
+3. Click on the profile tab in the nav bar. Welcome to your profile page! You should be able to see all the user’s information. 
 
 4. Edit profile in any way. Save. You should be able to see any changes. 
 
 5. Add a profile picture. If it's not too big of a file, you should be able to see it next to your name.
 
-6. Click on the Wellesley World banner OR the home tab in the navbar to visit the homepage. You will see information for three of your MOST RECENTLY ADDED friends. Will flash if there are no friends.
+6. Click on the Wellesley World banner OR the home tab in the navbar to visit the homepage. You will see information for three of your MOST RECENTLY ADDED friends. Will flash a message if there are no friends.
 
 7. Use the searchbar and dropdown to search for the name Lyra.
 

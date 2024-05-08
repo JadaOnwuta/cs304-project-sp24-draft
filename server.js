@@ -70,9 +70,9 @@ bcrypt = require('bcrypt');
 /**
  * Helper function to check if someone is truly logged in (session obj)
  * before executing any code that a user needs to be logged in for
- * @param {*} req - Request Object
- * @param {*} res - Response Object
- * @param {*} next - Next function to be executed in the chain
+ * @param {Object} req - Request Object
+ * @param {Object} res - Response Object
+ * @param {Function} next - Next function to be executed in the chain
  * @returns a response object describing URL where user will be taken
  */
 async function requiresLogin(req, res, next) {
@@ -195,7 +195,8 @@ app.post('/rm-friend/:uid', requiresLogin, async (req, res) => {
     let result = await db.collection(PROFILES).updateOne({username:currUser},
         {$pull:{friends: friendUid}});
     
-    await db.collection(PROFILES).updateOne({username: friendUid}, {$pull: {pendingFriends: currUser}});
+    await db.collection(PROFILES).updateOne({username: friendUid}, 
+        {$pull: {pendingFriends: currUser}});
     if (result.modifiedCount == 1){
         req.flash("info", "Removed " + friendUid + " from friends");
     }
@@ -534,7 +535,7 @@ app.post('/profile/upload/:username/', requiresLogin, upload.single('photo'), as
 
 /**
  * Helper function to load the three friends that the user last added  
- * @param {object} req 
+ * @param {Object} req 
  * @param {String} uid the uid of the user
  * @param {database} profiles profiles collection of wworld db
  * @returns personObject (the user's information as a dictionary) and 
@@ -710,10 +711,10 @@ async function getChatUsers(chats,curr){
 /**
  * This function creates a new chat object in the chats collection
  *  the first time the user tries to chat with another user.
- * @param {*} uid - the current users id
- * @param {*} friendUid - the id of the person the current user is chatting with
- * @param {*} currUserName - the current users name
- * @param {*} friendUserName - the name of the person the current user is chatting with
+ * @param {String} uid - the current users id
+ * @param {String} friendUid - the id of the person the current user is chatting with
+ * @param {String} currUserName - the current users name
+ * @param {String} friendUserName - the name of the person the current user is chatting with
  */
 async function newChatObj(uid, friendUid, currUserName, friendUserName){
     const db = await Connection.open(mongoUri, WW);
@@ -729,7 +730,7 @@ async function newChatObj(uid, friendUid, currUserName, friendUserName){
 
 /**
  * renders the current chat messages between the current user
- *  and whichever user's uid is in the url
+ * and whichever user's uid is in the url
  * and a text input to write a chat
  */
 app.get('/chat/:username', requiresLogin, async (req, res) => {
@@ -826,7 +827,7 @@ async function alumFinder(peopleFound) {
 }
 
 /**
- * populates page with profils that match the users search criteria
+ * populates page with profiles that match the users search criteria
  * TO-DO: search for more than one thing at a time?
  */
 app.get('/search/', requiresLogin, async (req, res) => {
