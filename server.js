@@ -612,6 +612,13 @@ app.get("/do-select/", requiresLogin, async (req, res) => {
             {username: {$nin: personObject.friends}},     // filter out old friends
             {username: {$ne: personObject.username}}     // filter out the user themselves
         ]}).toArray();
+    } else if (attribute === "major") {
+        newFriendsArray = await profiles.find({$and: [
+            // find people with at least one of the same major(s) (if they're a double major)
+            {major: {$in: personAttr}},   
+            {username: {$nin: personObject.friends}},     // filter out old friends
+            {username: {$ne: personObject.username}}     // filter out the user themselves
+        ]}).toArray();
     } else {
         newFriendsArray = await profiles.find({$and: [
             {[attribute]: {$eq: personAttr}},     // find people with the same attribute
