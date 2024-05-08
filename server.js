@@ -607,16 +607,16 @@ app.get("/do-select/", requiresLogin, async (req, res) => {
     }
 
     let newFriendsArray;
-    if (attribute === "interests") {
+    if (attribute === "interests" || attribute === "major") {
         newFriendsArray = await profiles.find({$and: [
-            {interests: {$in: personAttr}},     // find people with the same interests
+            {[attribute]: {$in: personAttr}},     // find people with the same attribute
             {username: {$nin: personObject.friends}},     // filter out old friends
             {username: {$ne: personObject.username}}     // filter out the user themselves
         ]}).toArray();
-    } else if (attribute === "major") {
+    } else if (attribute === "field") {
+        let pattern = new RegExp(personAttr, 'i');
         newFriendsArray = await profiles.find({$and: [
-            // find people with at least one of the same major(s) (if they're a double major)
-            {major: {$in: personAttr}},   
+            {field: {$regex: pattern}},             // find people with the same attribute
             {username: {$nin: personObject.friends}},     // filter out old friends
             {username: {$ne: personObject.username}}     // filter out the user themselves
         ]}).toArray();
