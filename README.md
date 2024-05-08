@@ -28,25 +28,27 @@ Directions for use:
 
 5. Add a profile picture. If it's not too big of a file, you should be able to see it next to your name.
 
-6. Click on the Wellesley World banner OR the home tab in the navbar to visit the homepage. You will see information for three of your MOST RECENTLY ADDED friends. Will flash a message if there are no friends.
+6. Add a link to your LinkedIn (if you have one) to your profile.
 
-7. Use the searchbar and dropdown to search for the name Lyra.
+7. Click on the Wellesley World banner OR the home tab in the navbar to visit the homepage. You will see information for three of your MOST RECENTLY ADDED friends. Will flash a message if there are no friends.
 
-8. Click on Lyra's profile and add Lyra as a friend.
+8. Use the searchbar and dropdown to search for the name Lyra.
 
-9. Click on the chat button to chat with this friend.
+9. Click on Lyra's profile and add Lyra as a friend.
 
-10. Send a couple of messages!
+10. Click on the chat button to chat with this friend.
 
-11. To see the list of all the people you have chatted with, click the chats link on the nav bar
+11. Send a couple of messages!
 
-12. Click on the banner again to take you back home
+12. To see the list of all the people you have chatted with, click the chats link on the nav bar
 
-13. Do some searches to find more friends by different categories
+13. Click on the banner again to take you back home
 
-14. Try filtering as well to see users that have things in common with you
+14. Do some searches to find more friends by different categories
 
-15. Logout!
+15. Try filtering as well to see users that have things in common with you
+
+16. Logout!
 
 
 

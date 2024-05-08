@@ -40,7 +40,6 @@ app.use(bodyParser.json());
 app.use(cs304.logRequestData);  // tell the user about any request data
 app.use(flash());
 
-
 app.use(serveStatic('public'));
 app.set('view engine', 'ejs');
 
@@ -123,7 +122,6 @@ app.post("/login", async (req, res) => {
         
         //This line is making logins take forever
         const match = await bcrypt.compare(password, existingUser.password); 
-        //console.log('match', match);
         
         if (!match) {
         req.flash('error', "Username or password incorrect - try again.");
@@ -132,7 +130,6 @@ app.post("/login", async (req, res) => {
         req.flash('info', 'successfully logged in as ' + username);
         req.session.username = username;
         req.session.logged_in = true;
-        //console.log('login as', username);
         return res.redirect("/homepage");
 
     } catch (error) {
@@ -268,7 +265,6 @@ app.post('/profileform', async (req, res) => {
     const hash = await bcrypt.hash(password, ROUNDS);
     
     //add profile to database
-
     const dbopen = await Connection.open(mongoUri, WW);
     const profiles = dbopen.collection(PROFILES);
     await profiles.insertOne({name: name, username: username, password: hash, 
@@ -630,7 +626,6 @@ app.get("/do-select/", requiresLogin, async (req, res) => {
 
     console.log("attribute: ", attribute);
     console.log("personAttr: ", personAttr);
-    // console.log(newFriendsArray);
 
     if (newFriendsArray.length === 0) {
         req.flash("info", "You're unique! Nobody has the same attribute yet. Try sorting by another feature :)");
@@ -704,7 +699,6 @@ async function getChatUsers(chats,curr){
         });
     });
 
-    
     return chatList;
 }
 
@@ -858,14 +852,13 @@ app.get('/search/', requiresLogin, async (req, res) => {
         //three routes: find no one, find one person, find multiple people
         if (allNames.length == 0){
             req.flash('info',`Sorry, no one with the user name: ${term} was found`);
-            //would it be better to redirect or re-render here?
             return res.render("searchPage.ejs",{data:allNames, currUser:currentUser});
         }
         else{
             return res.render("searchPage.ejs",{data:allNames, currUser:currentUser});
         }
     }
-    //lets check class years here -- might make it a click thing later on?
+    //lets check class years here
     else if (kind == "classYear"){
 
         let regYear = new RegExp(term, 'i');
@@ -878,7 +871,6 @@ app.get('/search/', requiresLogin, async (req, res) => {
 
         if (allYears.length == 0){
             req.flash('info',`Sorry, no one with the class year: ${term} was found`);
-            //would it be better to redirect or re-render here?
             return res.render("searchPage.ejs",{data:allYears, currUser:currentUser});
         }
         else{
@@ -892,15 +884,12 @@ app.get('/search/', requiresLogin, async (req, res) => {
         let allMajors = await profiles.find({$or: [{major: {$regex: regMajor}}, 
             {minor: {$regex: regMajor}}]}).toArray();
 
-        //console.log(allInterests);
-
         if (alumStatus === "alums") {
             allMajors = await alumFinder(allMajors);
         }
 
         if (allMajors.length == 0){
             req.flash('info',`Sorry, no one with the major: ${term} was found`);
-            //would it be better to redirect or re-render here?
             return res.render("searchPage.ejs",{data:allMajors, currUser:currentUser});
         }
         else{
@@ -914,15 +903,12 @@ app.get('/search/', requiresLogin, async (req, res) => {
         let allInterests = await profiles.find(
             {interests: {$regex: regInterest}}).toArray();
 
-        //console.log(allInterests);
-
         if (alumStatus === "alums") {
             allInterests = await alumFinder(allInterests);
         }
 
         if (allInterests.length == 0){
             req.flash('info',`Sorry, no one with the interest: ${term} was found`);
-            //would it be better to redirect or re-render here?
             return res.render("searchPage.ejs",{data:allInterests, currUser:currentUser});
         }
         else{
@@ -935,15 +921,12 @@ app.get('/search/', requiresLogin, async (req, res) => {
         //search for profiles with that specific interest!
         let allFields = await profiles.find({field: {$regex: regField}}).toArray();
 
-        //console.log(allInterests);
-
         if (alumStatus === "alums") {
             allFields = await alumFinder(allFields);
         }
 
         if (allFields.length == 0){
             req.flash('info',`Sorry, no one with the field: ${term} was found`);
-            //would it be better to redirect or re-render here?
             return res.render("searchPage.ejs",{data:allFields, currUser:currentUser});
         }
         else{
@@ -963,7 +946,6 @@ app.get('/search/', requiresLogin, async (req, res) => {
 
         if (allRegion.length == 0){
             req.flash('info',`Sorry, no one lives in: ${term}!`);
-            //would it be better to redirect or re-render here?
             return res.render("searchPage.ejs",{data:allRegion, currUser:currentUser});
         }
         else{
